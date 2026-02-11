@@ -1,0 +1,46 @@
+# --- General Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+
+# --- Virtual Environments ---
+venv/
+env/
+.venv/
+
+# --- Environment Variables ---
+.env
+backend/.env
+
+# --- Django ---
+*.sqlite3
+db.sqlite3
+*.log
+local_settings.py
+static_root/
+media/
+staticfiles/
+
+# --- Docker ---
+docker-compose.override.yml
+.docker/
+
+# --- IDEs ---
+.idea/
+.vscode/
+*.swp
+
+# --- Frontend ---
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+dist/
+build/
+.next/
+coverage/
+
+# --- OS specific ---
+.DS_Store
+Thumbs.db
