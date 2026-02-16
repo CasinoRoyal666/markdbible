@@ -14,9 +14,14 @@ class NoteViewSet(viewsets.ModelViewSet):
         List of notes
         :return: List of notes of current user (if user not anon)
         """
-        if self.request.user.is_anonymous:
-            return Note.objects.none()
-        return Note.objects.filter(user=self.request.user)
+
+        # for testing only
+        return Note.objects.all()
+
+        
+        # if self.request.user.is_anonymous:
+        #     return Note.objects.none()
+        # return Note.objects.filter(user=self.request.user)
 
     def get_serializer_class(self):
         """
