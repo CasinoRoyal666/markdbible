@@ -4,6 +4,9 @@ from rest_framework.response import Response
 from .models import Note
 from .serializers import NoteListSerializer, NoteDetailSerializer
 
+
+from django.contrib.auth.models import User
+
 class NoteViewSet(viewsets.ModelViewSet):
     # Only authorized users can do smthng
     # Commented for ezy testing
@@ -14,9 +17,14 @@ class NoteViewSet(viewsets.ModelViewSet):
         List of notes
         :return: List of notes of current user (if user not anon)
         """
-        if self.request.user.is_anonymous:
-            return Note.objects.none()
-        return Note.objects.filter(user=self.request.user)
+
+        # for testing only
+        return Note.objects.all()
+
+
+        # if self.request.user.is_anonymous:
+        #     return Note.objects.none()
+        # return Note.objects.filter(user=self.request.user)
 
     def get_serializer_class(self):
         """
@@ -28,12 +36,16 @@ class NoteViewSet(viewsets.ModelViewSet):
         return NoteDetailSerializer
 
     def perform_create(self, serializer):
+        user = self.request.user
+        if user.is_anonymous:
+            user = User.objects.first()
         """
         Tie the created note to the authenticated user.
         :param serializer:
         :return:
         """
-        serializer.save(user=self.request.user)
+        serializer.save(user=user)
+        #serializer.save(user=self.request.user)
 
     # Api for graph
     # GET /api/notes/graph/
