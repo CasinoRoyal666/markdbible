@@ -14,7 +14,7 @@ const Editor = ({ activeNote, onUpdateNote }) => {
             [field]: value,
         });
     };
-
+    console.log("Active Note Data:", activeNote);
     return (
         <div className="editor-pane" key={activeNote.id}>
             <div className="editor-header" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
@@ -56,6 +56,32 @@ const Editor = ({ activeNote, onUpdateNote }) => {
                     placeholder="Write your markdown here..."
                     onChange={(e) => onEditField("content", e.target.value)}
                     />
+            )}
+            {activeNote.backlinks && activeNote.backlinks.length > 0 && (
+                <div style={{
+                    marginTop: 'auto',
+                    paddingTop: '20px',
+                    borderTop: '1px solid #3e3e42'
+                }}>
+                    <h4 style={{ color: '#666', marginBottom: '10px' }}>Linked to this note:</h4>
+                    <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                        {activeNote.backlinks.map(link => (
+                            <span
+                                key={link.id}
+                                style={{
+                                    padding: '5px 10px',
+                                    background: '#2d2d30',
+                                    borderRadius: '15px',
+                                    fontSize: '0.8rem',
+                                    color: '#78a9ff',
+                                    border: '1px solid #3e3e42'
+                                }}
+                            >
+                          [[{link.title}]]
+                      </span>
+                        ))}
+                    </div>
+                </div>
             )}
         </div>
     );
