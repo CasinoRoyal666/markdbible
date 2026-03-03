@@ -1,16 +1,20 @@
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, generics
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from .models import Note
-from .serializers import NoteListSerializer, NoteDetailSerializer
-
+from .serializers import NoteListSerializer, NoteDetailSerializer, UserSerializer
 
 from django.contrib.auth.models import User
 
+# registration view - allow registration to ANY
+class RegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    permission_classes = (permissions.AllowAny,)
+    serializer_class = UserSerializer
+
+# note views - only for authenticated users
 class NoteViewSet(viewsets.ModelViewSet):
-    # Only authorized users can do smthng
-    # Commented for ezy testing
-    #permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         """
@@ -18,13 +22,10 @@ class NoteViewSet(viewsets.ModelViewSet):
         :return: List of notes of current user (if user not anon)
         """
 
+        return Note.objects.filter(user=self.request.user)
         # for testing only
-        return Note.objects.all()
+        # return Note.objects.all()
 
-
-        # if self.request.user.is_anonymous:
-        #     return Note.objects.none()
-        # return Note.objects.filter(user=self.request.user)
 
     def get_serializer_class(self):
         """
@@ -36,16 +37,7 @@ class NoteViewSet(viewsets.ModelViewSet):
         return NoteDetailSerializer
 
     def perform_create(self, serializer):
-        user = self.request.user
-        if user.is_anonymous:
-            user = User.objects.first()
-        """
-        Tie the created note to the authenticated user.
-        :param serializer:
-        :return:
-        """
-        serializer.save(user=user)
-        #serializer.save(user=self.request.user)
+        serializer.save(user=self.request.user)
 
     # Api for graph
     # GET /api/notes/graph/
@@ -60,6 +52,7 @@ class NoteViewSet(viewsets.ModelViewSet):
 
         nodes_data = [{'id': note.id, 'label': note.title} for note in notes]
 
+        edge_ids = set()
         edges_data = []
         for note in notes:
             for link in note.links.all():
