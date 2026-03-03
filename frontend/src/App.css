@@ -37,6 +37,9 @@ body {
 }
 
 .note-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 8px;
     cursor: pointer;
     border-radius: 4px;
@@ -99,4 +102,20 @@ body {
     outline: none;
     line-height: 1.5;
     font-family: 'Consolas', 'Monaco', monospace;
+}
+
+.delete-btn {
+    background: transparent;
+    border: none;
+    color: #ff5555;
+    font-size: 1.2rem;
+    cursor: pointer;
+    opacity: 0.6;
+    padding: 0 5px;
+}
+
+.delete-btn:hover{
+    opacity: 1;
+    background-color: rgba(255, 0, 0, 0.1);
+    border-radius: 4px;
 }

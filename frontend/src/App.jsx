@@ -3,11 +3,13 @@ import "./App.css"
 import api from "./api";
 import Sidebar from "./components/Sidebar";
 import Editor from "./components/Editor";
+import GraphView from "./components/GraphView.jsx";
 
 function App() {
     const [notes, setNotes] = useState([]);
     const [activeNoteId, setActiveNoteId] = useState(null);
     const [saveStatus, setSaveStatus] = useState("Saved");
+    const [isGraphOpen, setIsGraphOpen] = useState(false);
 
     useEffect(() => {
         const fetchNotes = async () => {
@@ -61,6 +63,30 @@ function App() {
         }
     };
 
+    const onDeleteNote = async (noteId) => {
+        const confirmDelete = window.confirm("Are you sure you want to delete this note?")
+        if (!confirmDelete) return;
+
+        try {
+            // delete on serever
+            await api.delete(`notes/${noteId}/`);
+            // delete from state
+            setNotes(notes.filter((note) => note.id !== noteId));
+            // if note was open => close redactor
+            if (activeNoteId === noteId) {
+                setActiveNoteId(null);
+            }
+        } catch (error) {
+            console.error("Error deleting note:", error);
+        }
+    };
+
+    // graph node click handler
+    const onNodeClickFromGraph = (noteId) => {
+        setIsGraphOpen(false);
+        onSelectNote(noteId);
+    }
+
     const activeNote = notes.find((note) => note.id === activeNoteId);
 
     useEffect(() => {
@@ -89,6 +115,8 @@ function App() {
                 activeNoteId={activeNoteId}
                 onSelectNote={onSelectNote}
                 onAddNote={addNote}
+                onDeleteNote={onDeleteNote}
+                onOpenGraph={() => setIsGraphOpen(true)}
             />
 
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
@@ -106,6 +134,12 @@ function App() {
                     onUpdateNote={onUpdateNote}
                 />
             </div>
+            {isGraphOpen && (
+                <GraphView
+                    onClose={() => setIsGraphOpen(false)}
+                    onNodeClick={onNodeClickFromGraph}
+                />
+            )}
         </div>
     );
 }
