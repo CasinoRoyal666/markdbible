@@ -6,6 +6,26 @@ const Sidebar = ({ notes, activeNoteId, onSelectNote, onAddNote, onDeleteNote, o
     const [searchTerm, setSearchTerm] = useState("");
     const username = localStorage.getItem("username") || "User";
 
+    const commonStyle = {
+        width: '100%',
+        padding: '8px',
+        marginBottom: '10px',
+        background: '#1e1e1e',
+        border: '1px solid #3e3e42',
+        color: 'white',
+        borderRadius: '4px',
+        boxSizing: 'border-box',
+        fontSize: '14px'
+    };
+
+    const buttonStyle = {
+        ...commonStyle,
+        background: '#2d2d30',
+        color: '#aaa',
+        cursor: 'pointer',
+        marginBottom: '15px'
+    };
+
     const onLogout = () => {
         localStorage.clear();
         navigate("/login");
@@ -29,30 +49,13 @@ const Sidebar = ({ notes, activeNoteId, onSelectNote, onAddNote, onDeleteNote, o
                 placeholder="Search notes..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                style={{
-                    width: '100%',
-                    marginBottom: '15px',
-                    padding: '8px',
-                    background: '#1e1e1e',
-                    border: '1px solid #3e3e42',
-                    color: 'white',
-                    borderRadius: '4px'
-                }}
+                style={commonStyle}
             />
 
             {/* graph button */}
             <button
                 onClick={onOpenGraph}
-                style={{
-                    width: '100%',
-                    marginBottom: '15px',
-                    padding: '8px',
-                    background: '#2d2d30',
-                    color: '#aaa',
-                    border: '1px solid #3e3e42',
-                    borderRadius: '4px',
-                    cursor: 'pointer'
-                }}
+                style={buttonStyle}
                 >
                 Open Graph View
             </button>
