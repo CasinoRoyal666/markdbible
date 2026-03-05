@@ -1,6 +1,11 @@
 from rest_framework import serializers
-from .models import Note
+from .models import Note, Tag
 from django.contrib.auth.models import User
+
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ['id', 'name']
 
 class NoteLinkSerializer(serializers.ModelSerializer):
     """
@@ -21,9 +26,11 @@ class NoteListSerializer(serializers.ModelSerializer):
         "updated_at": "2026-02-11T21:08:52.587035Z"
     }
     """
+    tags = TagSerializer(many=True, read_only=True)
+
     class Meta:
         model = Note
-        fields = ['id', 'title', 'updated_at']
+        fields = ['id', 'title', 'updated_at', 'tags']
 
 class NoteDetailSerializer(serializers.ModelSerializer):
     """
@@ -46,10 +53,11 @@ class NoteDetailSerializer(serializers.ModelSerializer):
     """
     links = NoteLinkSerializer(many=True, read_only=True)
     backlinks =  NoteLinkSerializer(many=True, read_only=True)
+    tags = TagSerializer(many=True, read_only=True)
 
     class Meta:
         model = Note
-        fields = ['id', 'title', 'content', 'created_at', 'updated_at', 'links', 'backlinks']
+        fields = ['id', 'title', 'content', 'created_at', 'updated_at', 'links', 'backlinks', 'tags']
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)

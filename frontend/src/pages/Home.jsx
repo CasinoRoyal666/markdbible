@@ -10,6 +10,7 @@ function Home() {
     const [activeNoteId, setActiveNoteId] = useState(null);
     const [saveStatus, setSaveStatus] = useState("Saved");
     const [isGraphOpen, setIsGraphOpen] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
         const fetchNotes = async () => {
@@ -68,7 +69,7 @@ function Home() {
         if (!confirmDelete) return;
 
         try {
-            // delete on serever
+            // delete on server
             await api.delete(`notes/${noteId}/`);
             // delete from state
             setNotes(notes.filter((note) => note.id !== noteId));
@@ -86,6 +87,11 @@ function Home() {
         setIsGraphOpen(false);
         onSelectNote(noteId);
     }
+
+    const onTagClick = (tagName) => {
+        const cleanTag = tagName.replace('#', '');
+        setSearchTerm(`#${cleanTag}`);
+    };
 
     const activeNote = notes.find((note) => note.id === activeNoteId);
 
@@ -117,6 +123,8 @@ function Home() {
                 onAddNote={addNote}
                 onDeleteNote={onDeleteNote}
                 onOpenGraph={() => setIsGraphOpen(true)}
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
             />
 
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
@@ -132,6 +140,7 @@ function Home() {
                 <Editor
                     activeNote={activeNote}
                     onUpdateNote={onUpdateNote}
+                    onTagClick={onTagClick}
                 />
             </div>
             {isGraphOpen && (

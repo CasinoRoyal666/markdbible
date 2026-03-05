@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Note
+from .models import Note, Tag
 
 
 @admin.register(Note)
@@ -8,3 +8,7 @@ class NoteAdmin(admin.ModelAdmin):
     search_fields = ('title', 'content')
     # filter_horizontal = ('links',)
     readonly_fields = ('links',)
+
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')

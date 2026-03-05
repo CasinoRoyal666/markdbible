@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import ReactMarkdown from 'react-markdown'
 
-const Editor = ({ activeNote, onUpdateNote }) => {
+const Editor = ({ activeNote, onUpdateNote, onTagClick }) => {
     const [isPreview, setIsPreview] = useState(false);
 
     if (!activeNote) {
@@ -15,6 +15,47 @@ const Editor = ({ activeNote, onUpdateNote }) => {
         });
     };
     console.log("Active Note Data:", activeNote);
+
+    const LinkRenderer = (props) => {
+        return (
+            <a href={props.href} onClick={(e) => {
+            }}>
+                {props.children}
+            </a>
+        );
+    };
+
+    const components = {
+        p: ({ children }) => {
+            // children can be arrayed or empty string
+            return (
+                <p>
+                    {React.Children.map(children, (child) => {
+                        if (typeof child === 'string') {
+                            // transform text into tags (like "Hello #world text" -> ["Hello ", "#world", " text"])
+                            const parts = child.split(/(#\w+)/g);
+                            return parts.map((part, index) => {
+                                if (part.match(/^#\w+$/)) {
+                                    return (
+                                        <span
+                                            key={index}
+                                            className="obsidian-tag"
+                                            onClick={() => onTagClick(part)}
+                                        >
+                                            {part}
+                                        </span>
+                                    );
+                                }
+                                return part;
+                            });
+                        }
+                        return child;
+                    })}
+                </p>
+            );
+        }
+    };
+
     return (
         <div className="editor-pane" key={activeNote.id}>
             <div className="editor-header" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
@@ -42,21 +83,20 @@ const Editor = ({ activeNote, onUpdateNote }) => {
             </div>
             {/* Display Logic*/}
             {isPreview ? (
-                //markdown mode
                 <div className="markdown-preview" style={{ padding: '10px', lineHeight: '1.6' }}>
-                    <ReactMarkdown>
+                    <ReactMarkdown components={components}>
                         {activeNote.content}
                     </ReactMarkdown>
                 </div>
             ) : (
-                //redactor mode
                 <textarea
                     className="markdown-input"
                     value={activeNote.content}
                     placeholder="Write your markdown here..."
                     onChange={(e) => onEditField("content", e.target.value)}
-                    />
+                />
             )}
+
             {activeNote.backlinks && activeNote.backlinks.length > 0 && (
                 <div style={{
                     marginTop: 'auto',
