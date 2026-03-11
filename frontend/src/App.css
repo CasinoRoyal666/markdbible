@@ -119,3 +119,84 @@ body {
     background-color: rgba(255, 0, 0, 0.1);
     border-radius: 4px;
 }
+
+.tags-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 10px;
+    background: #252526;
+    border-bottom: 1px solid #3e3e42;
+    margin-bottom: 10px;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.tags-cloud::-webkit-scrollbar {
+    width: 6px;
+}
+
+.tags-cloud::-webkit-scrollbar-thumb {
+    background-color: #444;
+    border-radius: 3px;
+}
+
+.obsidian-tag {
+    background-color: rgba(108, 99, 255, 0.2);
+    color: #a29bfe;
+    border-radius: 12px;
+    padding: 2px 8px;
+    font-size: 0.9em;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    margin: 0 2px;
+    transition: background-color 0.2s;
+}
+
+.obsidian-tag:hover {
+    background-color: rgba(108, 99, 255, 0.4);
+    text-decoration: none;
+}
+
+.tag-pill {
+    font-size: 0.75rem;
+    padding: 3px 8px;
+    border-radius: 12px;
+    background-color: #3e3e42;
+    color: #ccc;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.tag-pill:hover {
+    background-color: #3e3e42;
+    color: white;
+    border-color: #78a9ff;
+}
+
+.tag-pill.selected {
+    background-color: #264f78;
+    color: white;
+    border-color: #78a9ff;
+}
+
+.note-tags-row {
+    display: flex;
+    gap: 4px;
+    margin-top: 6px;
+    flex-wrap: wrap;
+    height: 20px;
+    overflow: hidden;
+}
+
+.mini-tag {
+    font-size: 0.65rem;
+    color: #888;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1px 5px;
+    border-radius: 4px;
+    white-space: nowrap;
+}
