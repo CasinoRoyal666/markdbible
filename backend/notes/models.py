@@ -94,3 +94,11 @@ def update_note_links(sender, instance, created, **kwargs):
 
     # update the links (set will replace the old tag list with the new)
     instance.tags.set(tag_objects)
+
+class ImageAttachment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='note_images/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Image {self.id} by {self.user.username}"

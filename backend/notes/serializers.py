@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Note, Tag
+from .models import Note, Tag, ImageAttachment
 from django.contrib.auth.models import User
 
 class TagSerializer(serializers.ModelSerializer):
@@ -74,3 +74,7 @@ class UserSerializer(serializers.ModelSerializer):
         )
         return user
 
+class ImageAttachmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ImageAttachment
+        fields = ['id', 'image', 'uploaded_at']
