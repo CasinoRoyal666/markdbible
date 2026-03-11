@@ -26,6 +26,10 @@ staticfiles/
 docker-compose.override.yml
 .docker/
 
+# --- Tests (Pytest & Coverage)
+.coverage
+htmlcov/
+
 # --- IDEs ---
 .idea/
 .vscode/
