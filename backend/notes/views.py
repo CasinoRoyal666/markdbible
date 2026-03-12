@@ -1,8 +1,9 @@
 from rest_framework import viewsets, permissions, generics
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from .models import Note
-from .serializers import NoteListSerializer, NoteDetailSerializer, UserSerializer
+from .models import Note, ImageAttachment
+from .serializers import NoteListSerializer, NoteDetailSerializer, UserSerializer, ImageAttachmentSerializer
+from rest_framework.parsers import MultiPartParser, FormParser
 
 from django.contrib.auth.models import User
 
@@ -65,3 +66,17 @@ class NoteViewSet(viewsets.ModelViewSet):
             'nodes': nodes_data,
             'links': edges_data
         })
+
+class ImageAttachmentViewSet(viewsets.ModelViewSet):
+    queryset = ImageAttachment.objects.all()
+    serializer_class = ImageAttachmentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    #we accept files, not json!
+    parser_classes = (MultiPartParser, FormParser)
+
+    def get_queryset(self):
+        return ImageAttachment.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
