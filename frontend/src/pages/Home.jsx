@@ -95,6 +95,18 @@ function Home() {
 
     const activeNote = notes.find((note) => note.id === activeNoteId);
 
+
+    const onWikiLinkClick = (title) => {
+        const targetNote = notes.find(n => n.title.toLowerCase() === title.toLowerCase());
+
+        if (targetNote) {
+            onSelectNote((targetNote.id));
+        } else {
+            alert(`Note - ${title} was not found (deleted or not created)`)
+            //!!!!add auto-create note!!!!
+        }
+    }
+
     useEffect(() => {
         if (!activeNote || saveStatus === 'Saved') return;
         const timeoutId = setTimeout(async () => {
@@ -141,6 +153,7 @@ function Home() {
                     activeNote={activeNote}
                     onUpdateNote={onUpdateNote}
                     onTagClick={onTagClick}
+                    onWikiLinkClick={onWikiLinkClick}
                 />
             </div>
             {isGraphOpen && (
