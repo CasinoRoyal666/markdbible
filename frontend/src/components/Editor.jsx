@@ -21,22 +21,26 @@ const Editor = ({ activeNote, onUpdateNote, onTagClick }) => {
     };
     console.log("Active Note Data:", activeNote);
 
-    // upload image function
-    const handleImageUpload = async (event) => {
-        const file = event.target.files[0];
-        if (!file) return;
+    const uploadImageFile = async (file) => {
+        //check if it's a pic
+        if(!file || !file.type.startsWith('image/')) return;
 
-        //create FormData object to send file
+        // limit of the file size (2 mb)
+        const MAX_SIZE_MB = 1.5;
+        const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
+
+        if (file.size >  MAX_SIZE_BYTES) {
+            alert(`File size is too large, maximum size is ${MAX_SIZE_MB} MB, please try again with smaller file size`);
+            return;
+        }
         const formData = new FormData();
         formData.append('image', file);
 
         try {
             const response = await api.post('images/', formData);
-            //django return full url for the image
             const imageUrl = response.data.image;
-            //form markdown string
             const imageMarkdown = `\n![Image](${imageUrl})\n`;
-            //paste to cursor location
+
             const textarea = textareaRef.current;
             if (textarea) {
                 const startPos = textarea.selectionStart;
@@ -44,19 +48,89 @@ const Editor = ({ activeNote, onUpdateNote, onTagClick }) => {
                 const textBefore = activeNote.content.substring(0, startPos);
                 const textAfter = activeNote.content.substring(endPos, activeNote.content.length);
 
-                onEditField("content", textBefore + imageMarkdown +textAfter);
+                onEditField("content", textBefore + imageMarkdown + textAfter);
             } else {
-                //if cursor not found then add to the end
                 onEditField("content", activeNote.content + imageMarkdown);
             }
         } catch (error) {
             console.error("Error uploading image:", error);
             alert("Failed to upload image. Check server logs.");
-        } finally {
-            //clear input to upload same file one more time
-            event.target.value = null;
         }
     }
+
+    // handler for the button
+    const handleFileInputChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            uploadImageFile(file);
+        }
+        event.target.value = null; // Очищаем инпут
+    };
+
+    // handler for drag-n-drop
+    const handleDrop = (event) => {
+        event.preventDefault();
+        const file = event.dataTransfer.files[0];
+        if (file) {
+            uploadImageFile(file);
+        }
+    };
+
+    // allow throw files over text
+    const handleDragOver = (event) => {
+        event.preventDefault();
+    };
+
+    //handler for ctrl + v
+    const handlePaste = (event) => {
+        // search files in buffer
+        const items = event.clipboardData.items;
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].type.indexOf('image') !== -1) {
+                event.preventDefault(); // stop regular text insertion
+                const file = items[i].getAsFile();
+                uploadImageFile(file);
+                break; // only load the first image
+            }
+        }
+    };
+
+    // // upload image function
+    // const handleImageUpload = async (event) => {
+    //     const file = event.target.files[0];
+    //     if (!file) return;
+    //
+    //     //create FormData object to send file
+    //     const formData = new FormData();
+    //     formData.append('image', file);
+    //
+    //     try {
+    //         const response = await api.post('images/', formData);
+    //         //django return full url for the image
+    //         const imageUrl = response.data.image;
+    //         //form markdown string
+    //         const imageMarkdown = `\n![Image](${imageUrl})\n`;
+    //         //paste to cursor location
+    //         const textarea = textareaRef.current;
+    //         if (textarea) {
+    //             const startPos = textarea.selectionStart;
+    //             const endPos = textarea.selectionEnd;
+    //             const textBefore = activeNote.content.substring(0, startPos);
+    //             const textAfter = activeNote.content.substring(endPos, activeNote.content.length);
+    //
+    //             onEditField("content", textBefore + imageMarkdown +textAfter);
+    //         } else {
+    //             //if cursor not found then add to the end
+    //             onEditField("content", activeNote.content + imageMarkdown);
+    //         }
+    //     } catch (error) {
+    //         console.error("Error uploading image:", error);
+    //         alert("Failed to upload image. Check server logs.");
+    //     } finally {
+    //         //clear input to upload same file one more time
+    //         event.target.value = null;
+    //     }
+    // }
 
     const LinkRenderer = (props) => {
         return (
@@ -155,7 +229,7 @@ const Editor = ({ activeNote, onUpdateNote, onTagClick }) => {
                         accept="image/*"
                         style={{ display: 'none' }}
                         ref={fileInputRef}
-                        onChange={handleImageUpload}
+                        onChange={handleFileInputChange}
                     />
 
                     {/* this button triggers hidden input */}
@@ -163,16 +237,42 @@ const Editor = ({ activeNote, onUpdateNote, onTagClick }) => {
                         <button
                             onClick={() => fileInputRef.current.click()}
                             style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
                                 background: 'transparent',
                                 color: '#aaa',
                                 border: '1px solid #3e3e42',
                                 padding: '5px 10px',
                                 borderRadius: '4px',
-                                cursor: 'pointer'
+                                cursor: 'pointer',
+                                transition: 'all 0.2s'
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.color = 'white';
+                                e.currentTarget.style.background = '#3e3e42';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.color = '#aaa';
+                                e.currentTarget.style.background = 'transparent';
                             }}
                             title="Upload Image"
                         >
-                            🖼️
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
+                            </svg>
                         </button>
                     )}
 
@@ -204,6 +304,10 @@ const Editor = ({ activeNote, onUpdateNote, onTagClick }) => {
                     value={activeNote.content}
                     placeholder="Write your markdown here..."
                     onChange={(e) => onEditField("content", e.target.value)}
+
+                    onDrop={handleDrop}
+                    onDragOver={handleDragOver}
+                    onPaste={handlePaste}
                 />
             )}
 
