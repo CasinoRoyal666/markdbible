@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import ReactMarkdown from 'react-markdown'
 import api from '../api.js'
 
-const Editor = ({ activeNote, onUpdateNote, onTagClick }) => {
+const Editor = ({ activeNote, onUpdateNote, onTagClick, onWikiLinkClick }) => {
     const [isPreview, setIsPreview] = useState(false);
     //link to a private input for choosing file
     const fileInputRef = useRef(null);
@@ -148,20 +148,35 @@ const Editor = ({ activeNote, onUpdateNote, onTagClick }) => {
                 <p>
                     {React.Children.map(children, (child) => {
                         if (typeof child === 'string') {
-                            // transform text into tags (like "Hello #world text" -> ["Hello ", "#world", " text"])
-                            const parts = child.split(/(#\w+)/g);
+                            const parts = child.split(/(#\w+|\[\[.*?\]\])/g);
+
                             return parts.map((part, index) => {
+                                // if it's a #tag
                                 if (part.match(/^#\w+$/)) {
                                     return (
-                                        <span
-                                            key={index}
-                                            className="obsidian-tag"
-                                            onClick={() => onTagClick(part)}
-                                        >
+                                        <span key={index} className="obsidian-tag" onClick={() => onTagClick(part)}>
                                             {part}
                                         </span>
                                     );
                                 }
+                                // if it's a [[wikilink]]
+                                if (part.match(/^\[\[(.*?)\]\]$/)) {
+                                    const innerText = part.slice(2, -2); // delete '[[' and ']]'
+                                    // alias support -> [[Real Title|Display Text]]
+                                    const title = innerText.split('|')[0].trim();
+                                    const displayText = innerText.split('|').length > 1 ? innerText.split('|')[1].trim() : title;
+
+                                    return (
+                                        <span
+                                            key={index}
+                                            className="obsidian-internal-link"
+                                            onClick={() => onWikiLinkClick(title)}
+                                        >
+                                            {displayText}
+                                        </span>
+                                    );
+                                }
+                                // if it's a regular text
                                 return part;
                             });
                         }

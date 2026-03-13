@@ -201,3 +201,20 @@ body {
     border-radius: 4px;
     white-space: nowrap;
 }
+
+/* wikilinks */
+.obsidian-internal-link {
+    color: #78a9ff;
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+    background-color: rgba(120, 169, 255, 0.1);
+    padding: 0 4px;
+    border-radius: 4px;
+}
+
+.obsidian-internal-link:hover {
+    text-decoration: underline;
+    color: #9abaff;
+}
