@@ -25,17 +25,18 @@ function Home() {
         fetchNotes();
     }, []);
 
-    const addNote = async () => {
+    const addNote = async (customTitle = null) => {
         try {
             const response = await api.post('notes/', {
-                title: "Empty Note",
+                title: typeof customTitle === 'string' ? customTitle: "NewNote",
                 content: ""
             });
             const newNote = response.data;
             setNotes([newNote, ...notes]);
             setActiveNoteId(newNote.id);
+            return newNote
         } catch (error) {
-            console.error(error);
+            console.error("Error creating note:",error);
         }
     };
 
@@ -96,16 +97,18 @@ function Home() {
     const activeNote = notes.find((note) => note.id === activeNoteId);
 
 
-    const onWikiLinkClick = (title) => {
+    const onWikiLinkClick = async (title) => {
         const targetNote = notes.find(n => n.title.toLowerCase() === title.toLowerCase());
 
         if (targetNote) {
-            onSelectNote((targetNote.id));
+            onSelectNote(targetNote.id);
         } else {
-            alert(`Note - ${title} was not found (deleted or not created)`)
-            //!!!!add auto-create note!!!!
+            const confirmed = window.confirm(`Note "${title}" was not found. Create new?`);
+            if (confirmed) {
+                await addNote(title);
+            }
         }
-    }
+    };
 
     useEffect(() => {
         if (!activeNote || saveStatus === 'Saved') return;
