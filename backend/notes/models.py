@@ -1,8 +1,23 @@
 import re
+import uuid
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+
+
+class Folder(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='folders')
+    name = models.CharField(max_length=255)
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='subfolders')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'name', 'parent')
+        ordering = ['name']
+
+    def __str__(self):
+        return f"{self.name} ({self.user.username})"
 
 class Tag(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tags')
@@ -16,6 +31,7 @@ class Tag(models.Model):
 
 class Note(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notes')
+    folders = models.ForeignKey(Folder, on_delete=models.CASCADE, null=True, blank=True, related_name='notes')
     title = models.CharField(max_length=255, db_index=True)
     content = models.TextField(blank=True, default="")
 
@@ -25,6 +41,11 @@ class Note(models.Model):
 
     #tags
     tags = models.ManyToManyField(Tag, related_name='notes', blank=True)
+
+    # shared notes features
+    is_public = models.BooleanField(default=False)
+    public_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    shared_with = models.ManyToManyField(User, related_name='shared_notes', blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

@@ -7,6 +7,7 @@ import GraphView from "../components/GraphView.jsx";
 
 function Home() {
     const [notes, setNotes] = useState([]);
+    const [folders, setFolders] = useState([]);
     const [activeNoteId, setActiveNoteId] = useState(null);
     const [saveStatus, setSaveStatus] = useState("Saved");
     const [isGraphOpen, setIsGraphOpen] = useState(false);
@@ -15,9 +16,14 @@ function Home() {
     useEffect(() => {
         const fetchNotes = async () => {
             try {
-                const response = await api.get('notes/');
-                const notesData = response.data;
+                const notesRes = await api.get('notes/');
+                const foldersRes = await api.get('folders/')
+
+                const notesData = notesRes.data.results || notesRes.data;
+                const foldersData = foldersRes.data.results || foldersRes.data
+
                 setNotes(notesData);
+                setFolders(foldersData);
             } catch (error) {
                 console.error(error);
             }
@@ -25,11 +31,28 @@ function Home() {
         fetchNotes();
     }, []);
 
-    const addNote = async (customTitle = null) => {
+    const onAddFolder = async (parentFolderId = null) => {
+        const folderName = window.prompt("Write new folder name:");
+        if (!folderName) return;
+
+        try {
+            const response = await api.post('folders/', {
+                name: folderName,
+                parent: parentFolderId
+            });
+            setFolders([...folders, response.data]);
+        } catch (error) {
+            console.error("Error creating folder: ", error);
+            alert("Error while creating new folder");
+        }
+    };
+
+    const addNote = async (customTitle = null, folderId = null) => {
         try {
             const response = await api.post('notes/', {
                 title: typeof customTitle === 'string' ? customTitle: "NewNote",
-                content: ""
+                content: "",
+                folders: folderId
             });
             const newNote = response.data;
             setNotes([newNote, ...notes]);
@@ -133,9 +156,11 @@ function Home() {
         <div className="app-container">
             <Sidebar
                 notes={notes}
+                folders={folders}
                 activeNoteId={activeNoteId}
                 onSelectNote={onSelectNote}
                 onAddNote={addNote}
+                onAddFolder={onAddFolder}
                 onDeleteNote={onDeleteNote}
                 onOpenGraph={() => setIsGraphOpen(true)}
                 searchTerm={searchTerm}

@@ -1,8 +1,8 @@
 from rest_framework import viewsets, permissions, generics
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from .models import Note, ImageAttachment
-from .serializers import NoteListSerializer, NoteDetailSerializer, UserSerializer, ImageAttachmentSerializer
+from .models import Note, ImageAttachment, Folder
+from .serializers import NoteListSerializer, NoteDetailSerializer, UserSerializer, ImageAttachmentSerializer, FolderSerializer
 from rest_framework.parsers import MultiPartParser, FormParser
 
 from django.contrib.auth.models import User
@@ -72,7 +72,7 @@ class ImageAttachmentViewSet(viewsets.ModelViewSet):
     serializer_class = ImageAttachmentSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    #we accept files, not json!
+    #we accept files, not JSON!
     parser_classes = (MultiPartParser, FormParser)
 
     def get_queryset(self):
@@ -80,3 +80,14 @@ class ImageAttachmentViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+class FolderViewSet(viewsets.ModelViewSet):
+    serializer_class = FolderSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        # return only folders of current user
+        return Folder.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user = self.request.user)
