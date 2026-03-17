@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import ReactMarkdown from 'react-markdown';
+import MarkdownRenderer from "../components/MarkdownRenderer.jsx";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -50,7 +50,7 @@ function SharedNote() {
                 {note.title}
             </h1>
             <div style={{ lineHeight: '1.7' }}>
-                <ReactMarkdown>{note.content}</ReactMarkdown>
+                <MarkdownRenderer content={note.content} interactive={false}/>
             </div>
         </div>
     );
