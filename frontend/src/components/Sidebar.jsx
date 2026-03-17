@@ -35,7 +35,7 @@ const NoteItem = ({ note, level = 0, activeNoteId, onSelectNote, onDeleteNote })
 };
 
 const FolderTree = ({folder, level = 0, folders, notes, activeNoteId, onSelectNote, onAddNote,
-onAddFolder, onDeleteNote }) => {
+onAddFolder, onDeleteNote, onDeleteFolder }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     //look for the folder content
@@ -76,6 +76,11 @@ onAddFolder, onDeleteNote }) => {
                         style={{ background: 'transparent', border: 'none', color: '#ffbdf2', cursor: 'pointer', padding: '0 5px' }}
                         title="Add subfolder"
                         >+📁</button>
+                    <button
+                        onClick={(e) => {e.stopPropagation(); onDeleteFolder(folder.id); }}
+                        style={{ background: 'transparent', border: 'none', color: '#ff5555', cursor: 'pointer', padding: '0 5px' }}
+                        title="Delete folder"
+                    >×</button>
                 </div>
             </div>
             {/* If the folder is open, recursively draw its children */}
@@ -93,6 +98,7 @@ onAddFolder, onDeleteNote }) => {
                             onAddNote={onAddNote}
                             onAddFolder={onAddFolder}
                             onDeleteNote={onDeleteNote}
+                            onDeleteFolder={onDeleteFolder}
                         />
                     ))}
                     {childNotes.map(childNote => (
@@ -117,7 +123,7 @@ onAddFolder, onDeleteNote }) => {
     )
 }
 
-const Sidebar = ({ notes, folders =[], activeNoteId, onSelectNote, onAddNote, onAddFolder, onDeleteNote, onOpenGraph, searchTerm, setSearchTerm }) => {
+const Sidebar = ({ notes, folders =[], activeNoteId, onSelectNote, onAddNote, onAddFolder, onDeleteNote, onDeleteFolder, onOpenGraph, searchTerm, setSearchTerm }) => {
     const navigate = useNavigate();
     const username = localStorage.getItem("username") || "User";
     const [selectedTag, setSelectedTag] = useState(null);
@@ -262,6 +268,7 @@ const Sidebar = ({ notes, folders =[], activeNoteId, onSelectNote, onAddNote, on
                                 onAddNote={onAddNote}
                                 onAddFolder={onAddFolder}
                                 onDeleteNote={onDeleteNote}
+                                onDeleteFolder={onDeleteFolder}
                             />
                         ))}
 
