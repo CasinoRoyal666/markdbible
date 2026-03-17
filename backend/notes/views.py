@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, permissions, generics
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -91,3 +92,11 @@ class FolderViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user = self.request.user)
+
+class PublicNoteView(generics.RetrieveAPIView):
+    permission_classes = [permissions.AllowAny]
+    serializer_class = NoteDetailSerializer
+
+    def get_object(self):
+        public_id = self.kwargs['public_id']
+        return get_object_or_404(Note, public_id=public_id, is_public=True)

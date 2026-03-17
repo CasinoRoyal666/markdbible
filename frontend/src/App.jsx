@@ -4,6 +4,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Home from './pages/Home';
 import ProtectedRoute from './components/ProtectedRoute';
+import SharedNote from "./pages/SharedNote.jsx";
 
 function App() {
     return (
@@ -12,20 +13,17 @@ function App() {
                 <Route
                     path="/"
                     element={
-                    <ProtectedRoute>
-                        <Home />
-                    </ProtectedRoute>
-                }
+                        <ProtectedRoute>
+                            <Home />
+                        </ProtectedRoute>
+                    }
                 />
-
-                //public routes
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-
+                <Route path="/shared/:publicId" element={<SharedNote />} />
                 <Route path="*" element={<Navigate to="/login" />} />
             </Routes>
         </BrowserRouter>
     )
 }
-
 export default App;

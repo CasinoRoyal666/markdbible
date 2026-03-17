@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown'
 import api from '../api.js'
 
@@ -8,6 +8,36 @@ const Editor = ({ activeNote, onUpdateNote, onTagClick, onWikiLinkClick }) => {
     const fileInputRef = useRef(null);
     //link to textarea to know where to insert text
     const textareaRef = useRef(null);
+    const [isShareOpen, setIsShareOpen] = useState(false);
+    const sharePopoverRef = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (sharePopoverRef.current && !sharePopoverRef.current.contains(e.target)) {
+                setIsShareOpen(false);
+            }
+        };
+        if (isShareOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [isShareOpen]);
+
+    const handleTogglePublic = async () => {
+        try {
+            const response = await api.patch(`notes/${activeNote.id}/`, {
+                is_public: !activeNote.is_public
+            });
+            onUpdateNote(response.data)
+        } catch (error) {
+            console.error("Error updating share status:", error);
+        }
+    };
+
+    const handleCopyLink = () => {
+        const link = `${window.location.origin}/shared/${activeNote.public_id}`;
+        navigator.clipboard.writeText(link);
+    };
 
     if (!activeNote) {
         return <div className="editor-pane"><div className="no-active-note">Select a note to edit</div></div>;
@@ -290,6 +320,132 @@ const Editor = ({ activeNote, onUpdateNote, onTagClick, onWikiLinkClick }) => {
                             </svg>
                         </button>
                     )}
+                    {/* Share button and popover */}
+                    <div style={{ position: 'relative' }} ref={sharePopoverRef}>
+                        <button
+                            onClick={() => setIsShareOpen(!isShareOpen)}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '5px',
+                                background: activeNote.is_public ? '#1a3a1a' : 'transparent',
+                                color: activeNote.is_public ? '#4ec94e' : '#aaa',
+                                border: `1px solid ${activeNote.is_public ? '#4ec94e' : '#3e3e42'}`,
+                                padding: '5px 10px',
+                                borderRadius: '4px',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s',
+                                fontSize: '13px'
+                            }}
+                            onMouseEnter={(e) => {
+                                if (!activeNote.is_public) {
+                                    e.currentTarget.style.color = 'white';
+                                    e.currentTarget.style.background = '#3e3e42';
+                                }
+                            }}
+                            onMouseLeave={(e) => {
+                                if (!activeNote.is_public) {
+                                    e.currentTarget.style.color = '#aaa';
+                                    e.currentTarget.style.background = 'transparent';
+                                }
+                            }}
+                            title="Share note"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                 fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <circle cx="18" cy="5" r="3"></circle>
+                                <circle cx="6" cy="12" r="3"></circle>
+                                <circle cx="18" cy="19" r="3"></circle>
+                                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                            </svg>
+                            Share
+                        </button>
+                        {isShareOpen && (
+                            <div style={{
+                                position: 'absolute',
+                                top: 'calc(100% + 8px)',
+                                right: 0,
+                                width: '300px',
+                                background: '#252526',
+                                border: '1px solid #3e3e42',
+                                borderRadius: '8px',
+                                padding: '16px',
+                                zIndex: 1000,
+                                boxShadow: '0 4px 20px rgba(0,0,0,0.4)'
+                            }}>
+                                <div style={{ fontSize: '13px', fontWeight: '600', color: '#ccc', marginBottom: '12px' }}>
+                                    Share note
+                                </div>
+                                {/* Toggle */}
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                <span style={{ fontSize: '13px', color: '#aaa' }}>
+                    {activeNote.is_public ? 'Public' : 'Private'}
+                </span>
+                                    <div
+                                        onClick={handleTogglePublic}
+                                        style={{
+                                            width: '44px',
+                                            height: '24px',
+                                            background: activeNote.is_public ? '#4ec94e' : '#3e3e42',
+                                            borderRadius: '12px',
+                                            cursor: 'pointer',
+                                            position: 'relative',
+                                            transition: 'background 0.2s'
+                                        }}
+                                    >
+                                        <div style={{
+                                            position: 'absolute',
+                                            top: '2px',
+                                            left: activeNote.is_public ? '22px' : '2px',
+                                            width: '20px',
+                                            height: '20px',
+                                            background: 'white',
+                                            borderRadius: '50%',
+                                            transition: 'left 0.2s'
+                                        }} />
+                                    </div>
+                                </div>
+                                {/* Link field */}
+                                {activeNote.is_public && (
+                                    <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                                        <input
+                                            readOnly
+                                            value={`${window.location.origin}/shared/${activeNote.public_id}`}
+                                            style={{
+                                                flex: 1,
+                                                background: '#1e1e1e',
+                                                border: '1px solid #3e3e42',
+                                                color: '#aaa',
+                                                padding: '6px 8px',
+                                                borderRadius: '4px',
+                                                fontSize: '11px',
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                whiteSpace: 'nowrap'
+                                            }}
+                                        />
+                                        <button
+                                            onClick={handleCopyLink}
+                                            title="Copy link"
+                                            style={{
+                                                background: '#3e3e42',
+                                                border: 'none',
+                                                color: '#ccc',
+                                                padding: '6px 8px',
+                                                borderRadius: '4px',
+                                                cursor: 'pointer',
+                                                flexShrink: 0
+                                            }}
+                                        >
+                                            📋
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </div>
 
                     <button
                         onClick={() => setIsPreview(!isPreview)}

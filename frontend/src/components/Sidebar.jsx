@@ -134,7 +134,7 @@ const Sidebar = ({ notes, folders =[], activeNoteId, onSelectNote, onAddNote, on
         navigate("/login");
     };
 
-    // Собираем уникальные теги
+    // collect unique tags
     const uniqueTags = useMemo(() => {
         const tags = new Set();
         notes.forEach(note => {
@@ -143,7 +143,6 @@ const Sidebar = ({ notes, folders =[], activeNoteId, onSelectNote, onAddNote, on
         return Array.from(tags).sort();
     }, [notes]);
 
-    // Фильтрация для режима поиска
     const filteredNotes = notes.filter(note => {
         const term = searchTerm.toLowerCase();
 
