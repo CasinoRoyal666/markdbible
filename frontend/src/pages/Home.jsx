@@ -142,6 +142,15 @@ function Home() {
         }
     };
 
+    const onRenameFolder = async (folderId, newName) => {
+        try {
+            const response = await api.patch(`folders/${folderId}/`, {name: newName});
+            setFolders(folders.map(f => f.id === folderId ? response.data : f));
+        } catch (error) {
+            console.error("Error renaming folder:", error);
+            alert("Error while renaming folder");
+        }
+    };
     // graph node click handler
     const onNodeClickFromGraph = (noteId) => {
         setIsGraphOpen(false);
@@ -199,6 +208,7 @@ function Home() {
                 onAddFolder={onAddFolder}
                 onDeleteNote={onDeleteNote}
                 onDeleteFolder={onDeleteFolder}
+                onRenameFolder={onRenameFolder}
                 onOpenGraph={() => setIsGraphOpen(true)}
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}

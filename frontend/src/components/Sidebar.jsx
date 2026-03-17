@@ -35,12 +35,31 @@ const NoteItem = ({ note, level = 0, activeNoteId, onSelectNote, onDeleteNote })
 };
 
 const FolderTree = ({folder, level = 0, folders, notes, activeNoteId, onSelectNote, onAddNote,
-onAddFolder, onDeleteNote, onDeleteFolder }) => {
+onAddFolder, onDeleteNote, onDeleteFolder, onRenameFolder }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [editName, setEditName] = useState(folder.name);
 
     //look for the folder content
     const childFolders = folders.filter(f => f.parent === folder.id);
     const childNotes = notes.filter(n => n.folders === folder.id);
+
+    const handleRenameSubmit = () => {
+        const trimmed = editName.trim();
+        if (trimmed && trimmed !== folder.name) {
+            onRenameFolder(folder.id, trimmed);
+        } else {
+            setEditName(folder.name);
+        }
+        setIsEditing(false);
+    };
+    const handleRenameKeyDown = (e) => {
+        if (e.key === 'Enter') handleRenameSubmit();
+        if (e.key === 'Escape') {
+            setEditName(folder.name);
+            setIsEditing(false);
+        }
+    };
 
     return (
         <div>
@@ -60,8 +79,33 @@ onAddFolder, onDeleteNote, onDeleteFolder }) => {
                 onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#37373d'}
                 onMouseLeave={(e) => e.currentTarget.style.backgroundColor ='transparent'}
             >
-                <div style={{ fontWeight: '500' }}>
-                    {isOpen ? '📂' : '📁'} {folder.name}
+                <div
+                    style={{ fontWeight: '500' }}
+                    onDoubleClick={(e) => { e.stopPropagation(); setIsEditing(true); }}
+                >
+                    {isOpen ? '📂' : '📁'}{' '}
+                    {isEditing ? (
+                        <input
+                            autoFocus
+                            value={editName}
+                            onChange={(e) => setEditName(e.target.value)}
+                            onBlur={handleRenameSubmit}
+                            onKeyDown={handleRenameKeyDown}
+                            onClick={(e) => e.stopPropagation()}
+                            style={{
+                                background: '#1e1e1e',
+                                border: '1px solid #78a9ff',
+                                color: 'white',
+                                borderRadius: '4px',
+                                padding: '1px 6px',
+                                fontSize: 'inherit',
+                                outline: 'none',
+                                width: '130px'
+                            }}
+                        />
+                    ) : (
+                        folder.name
+                    )}
                 </div>
 
                 {/* Folder management buttons (add note/folder inside) */}
@@ -99,6 +143,7 @@ onAddFolder, onDeleteNote, onDeleteFolder }) => {
                             onAddFolder={onAddFolder}
                             onDeleteNote={onDeleteNote}
                             onDeleteFolder={onDeleteFolder}
+                            onRenameFolder={onRenameFolder}
                         />
                     ))}
                     {childNotes.map(childNote => (
@@ -123,7 +168,7 @@ onAddFolder, onDeleteNote, onDeleteFolder }) => {
     )
 }
 
-const Sidebar = ({ notes, folders =[], activeNoteId, onSelectNote, onAddNote, onAddFolder, onDeleteNote, onDeleteFolder, onOpenGraph, searchTerm, setSearchTerm }) => {
+const Sidebar = ({ notes, folders =[], activeNoteId, onSelectNote, onAddNote, onAddFolder, onDeleteNote, onDeleteFolder, onRenameFolder, onOpenGraph, searchTerm, setSearchTerm }) => {
     const navigate = useNavigate();
     const username = localStorage.getItem("username") || "User";
     const [selectedTag, setSelectedTag] = useState(null);
@@ -268,6 +313,7 @@ const Sidebar = ({ notes, folders =[], activeNoteId, onSelectNote, onAddNote, on
                                 onAddFolder={onAddFolder}
                                 onDeleteNote={onDeleteNote}
                                 onDeleteFolder={onDeleteFolder}
+                                onRenameFolder={onRenameFolder}
                             />
                         ))}
 
