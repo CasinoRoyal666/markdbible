@@ -43,3 +43,16 @@ class TestNoteLogic:
         note_u2 = NoteFactory(user=user2, content="hehe i steal [[Secrets]] uhahaha")
 
         assert note_u2.links.count() == 0
+
+    def test_public_id_is_unique(self):
+        """each note gets a unique public_id"""
+        user = UserFactory()
+        note_a = NoteFactory(user=user)
+        note_b = NoteFactory(user=user)
+        assert note_a.public_id != note_b.public_id
+
+    def test_note_default_not_public(self):
+        """new note is private by default"""
+        user = UserFactory()
+        note = NoteFactory(user=user)
+        assert note.is_public is False

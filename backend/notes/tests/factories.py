@@ -1,6 +1,6 @@
 import factory
 from django.contrib.auth.models import User
-from ..models import Note
+from ..models import Note, Folder
 
 class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -16,3 +16,11 @@ class NoteFactory(factory.django.DjangoModelFactory):
     title = factory.Sequence(lambda n:f'Note {n}')
     content = "Some content"
     user = factory.SubFactory(UserFactory)
+
+class FolderFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Folder
+
+    name = factory.Sequence(lambda n: f'Folder {n}')
+    user = factory.SubFactory(UserFactory)
+    parent = None
