@@ -7,6 +7,7 @@ import GraphView from "../components/GraphView.jsx";
 
 function Home() {
     const [notes, setNotes] = useState([]);
+    const [folders, setFolders] = useState([]);
     const [activeNoteId, setActiveNoteId] = useState(null);
     const [saveStatus, setSaveStatus] = useState("Saved");
     const [isGraphOpen, setIsGraphOpen] = useState(false);
@@ -15,9 +16,14 @@ function Home() {
     useEffect(() => {
         const fetchNotes = async () => {
             try {
-                const response = await api.get('notes/');
-                const notesData = response.data;
+                const notesRes = await api.get('notes/');
+                const foldersRes = await api.get('folders/')
+
+                const notesData = notesRes.data.results || notesRes.data;
+                const foldersData = foldersRes.data.results || foldersRes.data
+
                 setNotes(notesData);
+                setFolders(foldersData);
             } catch (error) {
                 console.error(error);
             }
@@ -25,11 +31,28 @@ function Home() {
         fetchNotes();
     }, []);
 
-    const addNote = async (customTitle = null) => {
+    const onAddFolder = async (parentFolderId = null) => {
+        const folderName = window.prompt("Write new folder name:");
+        if (!folderName) return;
+
+        try {
+            const response = await api.post('folders/', {
+                name: folderName,
+                parent: parentFolderId
+            });
+            setFolders([...folders, response.data]);
+        } catch (error) {
+            console.error("Error creating folder: ", error);
+            alert("Error while creating new folder");
+        }
+    };
+
+    const addNote = async (customTitle = null, folderId = null) => {
         try {
             const response = await api.post('notes/', {
                 title: typeof customTitle === 'string' ? customTitle: "NewNote",
-                content: ""
+                content: "",
+                folders: folderId
             });
             const newNote = response.data;
             setNotes([newNote, ...notes]);
@@ -83,6 +106,51 @@ function Home() {
         }
     };
 
+    const getAllChildFolderIds = (folderId) => {
+        const directChildren = folders.filter(f => f.parent === folderId);
+        let allIds = directChildren.map(f => f.id);
+        directChildren.forEach(child => {
+            allIds = allIds.concat(getAllChildFolderIds(child.id));
+        });
+        return allIds;
+    };
+
+    const onDeleteFolder = async (folderId) => {
+        const allFolderIds = [folderId, ...getAllChildFolderIds(folderId)];
+        const containedNotes = notes.filter(n => allFolderIds.includes(n.folders));
+        const childFoldersCount = allFolderIds.length - 1;
+
+        let message = `Delete this folder?`;
+        if (containedNotes.length > 0 || childFoldersCount > 0) {
+            message = `This folder contains ${childFoldersCount} subfolder(s) and ${containedNotes.length} note(s).
+            Everything will be deleted. Continue?`;
+        }
+
+        const confirmed = window.confirm(message);
+        if (!confirmed) return;
+
+        try {
+            await api.delete(`folders/${folderId}/`);
+            setFolders(folders.filter(f => !allFolderIds.includes(f.id)));
+            setNotes(notes.filter(n => !allFolderIds.includes(n.folders)));
+            if (containedNotes.some(n => n.id === activeNoteId)) {
+                setActiveNoteId(null);
+            }
+        } catch (error) {
+            console.error("Error deleting folder:", error);
+            alert("Error while deleting folder");
+        }
+    };
+
+    const onRenameFolder = async (folderId, newName) => {
+        try {
+            const response = await api.patch(`folders/${folderId}/`, {name: newName});
+            setFolders(folders.map(f => f.id === folderId ? response.data : f));
+        } catch (error) {
+            console.error("Error renaming folder:", error);
+            alert("Error while renaming folder");
+        }
+    };
     // graph node click handler
     const onNodeClickFromGraph = (noteId) => {
         setIsGraphOpen(false);
@@ -133,10 +201,14 @@ function Home() {
         <div className="app-container">
             <Sidebar
                 notes={notes}
+                folders={folders}
                 activeNoteId={activeNoteId}
                 onSelectNote={onSelectNote}
                 onAddNote={addNote}
+                onAddFolder={onAddFolder}
                 onDeleteNote={onDeleteNote}
+                onDeleteFolder={onDeleteFolder}
+                onRenameFolder={onRenameFolder}
                 onOpenGraph={() => setIsGraphOpen(true)}
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}

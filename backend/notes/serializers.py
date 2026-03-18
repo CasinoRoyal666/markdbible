@@ -1,6 +1,11 @@
 from rest_framework import serializers
-from .models import Note, Tag, ImageAttachment
+from .models import Note, Tag, ImageAttachment, Folder
 from django.contrib.auth.models import User
+
+class FolderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Folder
+        fields = ['id', 'name', 'parent', 'created_at']
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
@@ -30,7 +35,7 @@ class NoteListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Note
-        fields = ['id', 'title', 'updated_at', 'tags']
+        fields = ['id', 'title', 'updated_at', 'tags', 'folders', 'is_public']
 
 class NoteDetailSerializer(serializers.ModelSerializer):
     """
@@ -57,7 +62,11 @@ class NoteDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Note
-        fields = ['id', 'title', 'content', 'created_at', 'updated_at', 'links', 'backlinks', 'tags']
+        fields = ['id', 'title', 'content', 'created_at',
+                  'updated_at', 'links', 'backlinks', 'tags', 'folders',
+                  'is_public', 'public_id', 'shared_with']
+
+        read_only_fields = ['public_id']
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)

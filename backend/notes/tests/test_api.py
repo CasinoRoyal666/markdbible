@@ -1,6 +1,8 @@
+from http.client import responses
+
 import pytest
 from rest_framework.test import APIClient
-from .factories import UserFactory, NoteFactory
+from .factories import UserFactory, NoteFactory, FolderFactory
 
 @pytest.mark.django_db
 class TestNoteAPI:
@@ -29,3 +31,54 @@ class TestNoteAPI:
 
         assert len(data) == 1
         assert data[0]['title'] == 'My Note'
+
+@pytest.mark.django_db
+class TestFolderApi:
+    def setup_method(self):
+        self.client = APIClient()
+        self.user = UserFactory()
+        self.url = '/api/folders/'
+
+    def test_anonymous_cannot_access_folders(self):
+        response = self.client.get(self.url)
+        assert response.status_code == 401
+
+    def test_create_folder(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(self.url, {'name': 'Work'})
+        assert response.status_code == 201
+        assert response.data['name'] == 'Work'
+
+    def test_delete_empty_folder(self):
+        folder = FolderFactory(user=self.user)
+        self.client.force_authenticate(user=self.user)
+        response = self.client.delete(f'{self.url}{folder.id}/')
+        assert response.status_code == 204
+        from ..models import Folder
+        assert not Folder.objects.filter(id=folder.id).exists()
+
+    def test_delete_folder_cascade_notes(self):
+        folder = FolderFactory(user=self.user)
+        note = NoteFactory(user=self.user, folders=folder)
+        self.client.force_authenticate(user=self.user)
+        self.client.delete(f'{self.url}{folder.id}/')
+        from ..models import Note
+        assert not Note.objects.filter(id=note.id).exists()
+
+    def test_delete_folder_cascades_subfolders(self):
+        parent = FolderFactory(user=self.user)
+        child = FolderFactory(user=self.user, parent=parent)
+        self.client.force_authenticate(user=self.user)
+        self.client.delete(f'{self.url}{parent.id}/')
+        from ..models import Folder
+        assert not Folder.objects.filter(id=child.id).exists()
+
+    def test_user_sees_only_own_folders(self):
+        FolderFactory(user=self.user, name='My Folder')
+        other_user = UserFactory()
+        FolderFactory(user=other_user, name='Not My Folder')
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(self.url)
+        assert response.status_code == 200
+        assert len(response.data) == 1
+        assert response.data[0]['name'] == 'My Folder'
