@@ -61,6 +61,14 @@ export const translations = {
         confirmDeleteFolderWithContent: (folders, notes) =>
             `This folder contains ${folders} subfolder(s) and ${notes} note(s).\nEverything will be deleted. Continue?`,
         noteNotFound: (title) => `Note "${title}" was not found. Create new?`,
+        // GraphView
+        closeGraph: 'Close Graph',
+        // SharedNote
+        loading: 'Loading...',
+        noteNotFoundTitle: 'Note not found',
+        noteNotFoundDesc: 'This note does not exist or is not public',
+        sharedNoteReadOnly: 'Shared note · read only',
+        writeMarkdown: 'Write something here...',
         // Settings modal
         settingsTitle: 'Settings',
         languageLabel: 'Language',
@@ -132,6 +140,14 @@ export const translations = {
         confirmDeleteFolderWithContent: (folders, notes) =>
             `Папка содержит ${folders} подпапок и ${notes} заметок.\nВсё будет удалено. Продолжить?`,
         noteNotFound: (title) => `Заметка "${title}" не найдена. Создать новую?`,
+        // GraphView
+        closeGraph: 'Закрыть граф',
+        // SharedNote
+        loading: 'Загрузка...',
+        noteNotFoundTitle: 'Заметка не найдена',
+        noteNotFoundDesc: 'Эта заметка не существует или не является публичной',
+        sharedNoteReadOnly: 'Публичная заметка · только для чтения',
+        writeMarkdown: 'Напишите что-нибудь здесь...',
         // Settings modal
         settingsTitle: 'Настройки',
         languageLabel: 'Язык',

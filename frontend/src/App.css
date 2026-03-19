@@ -264,3 +264,240 @@
     color: var(--accent-color);
     border: 1px solid var(--border-color);
 }
+
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+}
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    gap: 10px;
+}
+.auth-input {
+    padding: 10px;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    border-radius: 4px;
+    font-size: 14px;
+}
+.auth-input::placeholder {
+    color: var(--text-muted);
+}
+.auth-btn {
+    padding: 10px;
+    cursor: pointer;
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    transition: opacity 0.2s;
+}
+.auth-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+.auth-link {
+    margin-top: 20px;
+    color: var(--text-color);
+}
+.auth-link a {
+    color: var(--accent-color);
+    text-decoration: none;
+}
+.auth-link a:hover {
+    text-decoration: underline;
+}
+
+/* GraphView overlay */
+.graph-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--bg-color);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.graph-close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background: var(--border-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1001;
+    font-size: 1rem;
+    transition: background 0.2s;
+}
+.graph-close-btn:hover {
+    background: var(--hover-bg);
+}
+
+/* SharedNote page */
+.shared-note-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: var(--bg-color);
+    color: var(--text-muted);
+}
+.shared-note-notfound {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: var(--bg-color);
+    color: var(--text-muted);
+}
+.shared-note-notfound-title {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+.shared-note-notfound-desc {
+    font-size: 0.9rem;
+    color: var(--text-faint);
+}
+.shared-note-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    background: var(--bg-color);
+    min-height: 100vh;
+    color: var(--text-color);
+}
+.shared-note-header {
+    margin-bottom: 8px;
+    font-size: 0.8rem;
+    color: var(--text-faint);
+}
+.shared-note-title {
+    color: var(--text-color);
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 16px;
+}
+.shared-note-content {
+    line-height: 1.7;
+}
+
+/* Home page */
+.home-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.save-status {
+    text-align: right;
+    padding: 5px 20px;
+    font-size: 0.8rem;
+    color: var(--text-faint);
+}
+.save-status.error {
+    color: var(--accent-danger);
+}
+
+/* Settings Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+.modal-content {
+    background: var(--panel-bg-2);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 24px;
+    min-width: 320px;
+    position: relative;
+    box-shadow: 0 8px 32px var(--shadow);
+}
+.modal-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 4px 8px;
+    line-height: 1;
+    transition: color 0.2s;
+}
+.modal-close:hover {
+    color: var(--text-color);
+}
+.modal-title {
+    margin: 0 0 24px 0;
+    font-size: 1.25rem;
+    color: var(--text-color);
+}
+.modal-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+.modal-row:last-child {
+    border-bottom: none;
+}
+.modal-label {
+    font-size: 0.95rem;
+    color: var(--text-color);
+    flex: 1;
+}
+.modal-row .toggle-switch {
+    width: 44px;
+    height: 24px;
+    background: var(--border-color);
+    border-radius: 12px;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.2s;
+    margin: 0 12px;
+}
+.modal-row .toggle-switch:has(.toggle-thumb.right) {
+    background: var(--accent-color);
+}
+.modal-row .toggle-thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    transition: left 0.2s;
+}
+.modal-row .toggle-thumb.right {
+    left: 22px;
+}
+.toggle-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    min-width: 80px;
+    text-align: right;
+}

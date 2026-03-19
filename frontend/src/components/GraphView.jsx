@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import ForceGraph from "react-force-graph-2d";
 import api from '../api.js'
+import { useSettings } from '../context/SettingsContext.jsx';
+import { translations } from '../locales/translations.js';
 
 const GraphView = ({ onClose, onNodeClick}) => {
     const [graphData, setGrapthData] = useState({ nodes: [], links: [] });
@@ -8,6 +10,9 @@ const GraphView = ({ onClose, onNodeClick}) => {
     // Ref is needed so that the graph knows the dimensions of the container
     const containerRef = useRef(null);
     const [dimensions, setDimensions] = useState({ w: window.innerWidth, h: window.innerHeight });
+
+    const { language, theme } = useSettings();
+    const t = translations[language];
 
     useEffect(() => {
         const fetchGraph = async () => {
@@ -19,7 +24,7 @@ const GraphView = ({ onClose, onNodeClick}) => {
             }
         };
 
-        fetchGraph()
+        fetchGraph();
 
         const handleResize = () => {
             setDimensions({ w: window.innerWidth, h: window.innerHeight });
@@ -29,60 +34,28 @@ const GraphView = ({ onClose, onNodeClick}) => {
         return () => window.removeEventListener('resize', handleResize)
     }, []);
 
-    return (
-        <div
-            ref={containerRef}
-            style={{
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                width: '100vw',
-                height: '100vh',
-                backgroundColor: '#1e1e1e',
-                zIndex: 1000,
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center'
-            }}
-            >
-            <button
-                onClick={onClose}
-                style={{
-                    position: 'absolute',
-                    top: '20px',
-                    right: '20px',
-                    padding: '10px 20px',
-                    background: '#3e3e42',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '5px',
-                    cursor: 'pointer',
-                    zIndex: 1001,
-                    fontSize: '1rem'
-                }}
-                >
-                Close Graph
-            </button>
+    const bgColor = theme === 'light' ? '#ffffff' : '#1e1e1e';
+    const nodeColor = theme === 'light' ? '#0066cc' : '#78a9ff';
+    const linkColor = theme === 'light' ? '#cccccc' : '#555555';
 
-            //graph themself
+    return (
+        <div ref={containerRef} className="graph-overlay">
+            <button onClick={onClose} className="graph-close-btn">
+                {t.closeGraph}
+            </button>
             <ForceGraph
                 width={dimensions.w}
                 height={dimensions.h}
                 graphData={graphData}
-
-                // appearance Settings
                 nodeLabel="label"
-                nodeColor={() => "#78a9ff"}
-                linkColor={() => "#555"}
-                backgroundColor="#1e1e1e"
-
-                //node size
+                nodeColor={() => nodeColor}
+                linkColor={() => linkColor}
+                backgroundColor={bgColor}
                 nodeRelSize={6}
-
                 onNodeClick={(node) => {
                     onNodeClick(node.id);
                 }}
-                />
+            />
         </div>
     );
 };

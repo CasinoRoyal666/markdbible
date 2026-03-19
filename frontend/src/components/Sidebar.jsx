@@ -2,6 +2,8 @@ import React, { useMemo, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useSettings } from '../context/SettingsContext.jsx';
 import { translations } from '../locales/translations.js';
+import SettingsModal from './SettingsModal.jsx';
+
 const NoteItem = ({ note, level = 0, activeNoteId, onSelectNote, onDeleteNote, t }) => {
     return (
         <div
@@ -165,6 +167,8 @@ const Sidebar = ({ notes, folders = [], activeNoteId, onSelectNote, onAddNote, o
     const username = localStorage.getItem("username") || "User";
     const [selectedTag, setSelectedTag] = useState(null);
     const [isTagsOpen, setIsTagsOpen] = useState(false);
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
     const { language } = useSettings();
     const t = translations[language];
     const onLogout = () => {
@@ -209,6 +213,7 @@ const Sidebar = ({ notes, folders = [], activeNoteId, onSelectNote, onAddNote, o
     const rootFolders = folders.filter(f => f.parent === null);
     const rootNotes = notes.filter(n => n.folders === null);
     return (
+        <>
         <div className="sidebar">
             <div className="sidebar-header">MkBible
                 <div style={{ fontSize: '0.8rem', color: 'var(--text-faint)', marginTop: '5px' }}>
@@ -327,6 +332,13 @@ const Sidebar = ({ notes, folders = [], activeNoteId, onSelectNote, onAddNote, o
                     + 📄
                 </button>
                 <button
+                    onClick={() => setIsSettingsOpen(true)}
+                    style={{ padding: '10px', background: 'var(--border-color)', border: 'none', color: 'var(--text-muted)', borderRadius: '4px', cursor: 'pointer' }}
+                    title={t.settingsTitle}
+                >
+                    ⚙
+                </button>
+                <button
                     onClick={onLogout}
                     style={{ padding: '10px', background: 'var(--border-color)', border: 'none', color: 'var(--accent-danger)', borderRadius: '4px', cursor: 'pointer' }}
                     title={t.logout}
@@ -335,6 +347,11 @@ const Sidebar = ({ notes, folders = [], activeNoteId, onSelectNote, onAddNote, o
                 </button>
             </div>
         </div>
+            <SettingsModal
+                isOpen={isSettingsOpen}
+                onClose={() => setIsSettingsOpen(false)}
+            />
+        </>
     );
 };
 export default Sidebar;

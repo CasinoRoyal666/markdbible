@@ -200,7 +200,7 @@ const Editor = ({ activeNote, onUpdateNote, onTagClick, onWikiLinkClick }) => {
                     ref={textareaRef}
                     className="markdown-input"
                     value={activeNote.content}
-                    placeholder="Write your markdown here..."
+                    placeholder={t.writeMarkdown}
                     onChange={(e) => onEditField("content", e.target.value)}
                     onDrop={handleDrop}
                     onDragOver={handleDragOver}
