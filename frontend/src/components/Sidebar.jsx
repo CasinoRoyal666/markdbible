@@ -1,7 +1,8 @@
-import React, {useMemo, useState} from 'react';
+import React, { useMemo, useState } from 'react';
 import { useNavigate } from "react-router-dom";
-
-const NoteItem = ({ note, level = 0, activeNoteId, onSelectNote, onDeleteNote })  => {
+import { useSettings } from '../context/SettingsContext.jsx';
+import { translations } from '../locales/translations.js';
+const NoteItem = ({ note, level = 0, activeNoteId, onSelectNote, onDeleteNote, t }) => {
     return (
         <div
             className={`note-item ${note.id === activeNoteId ? 'active' : ''}`}
@@ -26,24 +27,20 @@ const NoteItem = ({ note, level = 0, activeNoteId, onSelectNote, onDeleteNote })
                     e.stopPropagation();
                     onDeleteNote(note.id);
                 }}
-                title="Delete Note"
+                title={t.deleteNote}
             >
                 ×
             </button>
         </div>
     );
 };
-
-const FolderTree = ({folder, level = 0, folders, notes, activeNoteId, onSelectNote, onAddNote,
-onAddFolder, onDeleteNote, onDeleteFolder, onRenameFolder }) => {
+const FolderTree = ({ folder, level = 0, folders, notes, activeNoteId, onSelectNote, onAddNote,
+                        onAddFolder, onDeleteNote, onDeleteFolder, onRenameFolder, t }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [editName, setEditName] = useState(folder.name);
-
-    //look for the folder content
     const childFolders = folders.filter(f => f.parent === folder.id);
     const childNotes = notes.filter(n => n.folders === folder.id);
-
     const handleRenameSubmit = () => {
         const trimmed = editName.trim();
         if (trimmed && trimmed !== folder.name) {
@@ -60,24 +57,22 @@ onAddFolder, onDeleteNote, onDeleteFolder, onRenameFolder }) => {
             setIsEditing(false);
         }
     };
-
     return (
         <div>
-            {/* the folder itself */}
             <div
                 className="folder-item"
                 style={{
                     marginLeft: `${level * 15}px`,
-                    display: "flex",
+                    display: 'flex',
                     justifyContent: 'space-between',
                     padding: '5px',
                     cursor: 'pointer',
-                    color: '#ccc',
+                    color: 'var(--text-color)',
                     borderRadius: '4px'
                 }}
                 onClick={() => setIsOpen(!isOpen)}
-                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#37373d'}
-                onMouseLeave={(e) => e.currentTarget.style.backgroundColor ='transparent'}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--hover-bg)'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
             >
                 <div
                     style={{ fontWeight: '500' }}
@@ -93,9 +88,9 @@ onAddFolder, onDeleteNote, onDeleteFolder, onRenameFolder }) => {
                             onKeyDown={handleRenameKeyDown}
                             onClick={(e) => e.stopPropagation()}
                             style={{
-                                background: '#1e1e1e',
-                                border: '1px solid #78a9ff',
-                                color: 'white',
+                                background: 'var(--input-bg)',
+                                border: '1px solid var(--accent-color)',
+                                color: 'var(--text-color)',
                                 borderRadius: '4px',
                                 padding: '1px 6px',
                                 fontSize: 'inherit',
@@ -107,27 +102,24 @@ onAddFolder, onDeleteNote, onDeleteFolder, onRenameFolder }) => {
                         folder.name
                     )}
                 </div>
-
-                {/* Folder management buttons (add note/folder inside) */}
                 <div style={{ display: 'flex', gap: '5px' }}>
                     <button
-                        onClick={(e) => {e.stopPropagation(); onAddNote(null, folder.id); setIsOpen(true); }}
-                        style={{ background: 'transparent', border: 'none', color: '#78a9ff', cursor: 'pointer', padding: '0 5px' }}
-                        title="Add note here"
-                        >+📄</button>
+                        onClick={(e) => { e.stopPropagation(); onAddNote(null, folder.id); setIsOpen(true); }}
+                        style={{ background: 'transparent', border: 'none', color: 'var(--accent-color)', cursor: 'pointer', padding: '0 5px' }}
+                        title={t.addNoteHere}
+                    >+📄</button>
                     <button
-                        onClick={(e) => {e.stopPropagation(); onAddFolder(folder.id); setIsOpen(true) }}
-                        style={{ background: 'transparent', border: 'none', color: '#ffbdf2', cursor: 'pointer', padding: '0 5px' }}
-                        title="Add subfolder"
-                        >+📁</button>
+                        onClick={(e) => { e.stopPropagation(); onAddFolder(folder.id); setIsOpen(true); }}
+                        style={{ background: 'transparent', border: 'none', color: 'var(--accent-folder)', cursor: 'pointer', padding: '0 5px' }}
+                        title={t.addSubfolder}
+                    >+📁</button>
                     <button
-                        onClick={(e) => {e.stopPropagation(); onDeleteFolder(folder.id); }}
-                        style={{ background: 'transparent', border: 'none', color: '#ff5555', cursor: 'pointer', padding: '0 5px' }}
-                        title="Delete folder"
+                        onClick={(e) => { e.stopPropagation(); onDeleteFolder(folder.id); }}
+                        style={{ background: 'transparent', border: 'none', color: 'var(--accent-danger)', cursor: 'pointer', padding: '0 5px' }}
+                        title={t.deleteFolder}
                     >×</button>
                 </div>
             </div>
-            {/* If the folder is open, recursively draw its children */}
             {isOpen && (
                 <div>
                     {childFolders.map(childFolder => (
@@ -144,6 +136,7 @@ onAddFolder, onDeleteNote, onDeleteFolder, onRenameFolder }) => {
                             onDeleteNote={onDeleteNote}
                             onDeleteFolder={onDeleteFolder}
                             onRenameFolder={onRenameFolder}
+                            t={t}
                         />
                     ))}
                     {childNotes.map(childNote => (
@@ -154,32 +147,30 @@ onAddFolder, onDeleteNote, onDeleteFolder, onRenameFolder }) => {
                             activeNoteId={activeNoteId}
                             onSelectNote={onSelectNote}
                             onDeleteNote={onDeleteNote}
+                            t={t}
                         />
-            ))}
-                    {/* if folder is empty */}
+                    ))}
                     {childFolders.length === 0 && childNotes.length === 0 && (
-                        <div style={{ marginLeft: `${(level + 1) * 15}px`, color: '#666', fontSize: '0.8rem', padding: '5px' }}>
-                            Empty folder
+                        <div style={{ marginLeft: `${(level + 1) * 15}px`, color: 'var(--text-faint)', fontSize: '0.8rem', padding: '5px' }}>
+                            {t.emptyFolder}
                         </div>
                     )}
                 </div>
             )}
         </div>
-    )
-}
-
-const Sidebar = ({ notes, folders =[], activeNoteId, onSelectNote, onAddNote, onAddFolder, onDeleteNote, onDeleteFolder, onRenameFolder, onOpenGraph, searchTerm, setSearchTerm }) => {
+    );
+};
+const Sidebar = ({ notes, folders = [], activeNoteId, onSelectNote, onAddNote, onAddFolder, onDeleteNote, onDeleteFolder, onRenameFolder, onOpenGraph, searchTerm, setSearchTerm }) => {
     const navigate = useNavigate();
     const username = localStorage.getItem("username") || "User";
     const [selectedTag, setSelectedTag] = useState(null);
-    const[isTagsOpen, setIsTagsOpen] = useState(false);
-
+    const [isTagsOpen, setIsTagsOpen] = useState(false);
+    const { language } = useSettings();
+    const t = translations[language];
     const onLogout = () => {
         localStorage.clear();
         navigate("/login");
     };
-
-    // collect unique tags
     const uniqueTags = useMemo(() => {
         const tags = new Set();
         notes.forEach(note => {
@@ -187,19 +178,15 @@ const Sidebar = ({ notes, folders =[], activeNoteId, onSelectNote, onAddNote, on
         });
         return Array.from(tags).sort();
     }, [notes]);
-
     const filteredNotes = notes.filter(note => {
         const term = searchTerm.toLowerCase();
-
         if (term.startsWith('#')) {
             const tagToFind = term.slice(1);
             if (!note.tags) return false;
             return note.tags.some(t => t.name.toLowerCase().includes(tagToFind));
         }
-
         return note.title.toLowerCase().includes(term);
     });
-
     const handleTagCloudClick = (tag) => {
         if (searchTerm === `#${tag}`) {
             setSearchTerm("");
@@ -207,51 +194,50 @@ const Sidebar = ({ notes, folders =[], activeNoteId, onSelectNote, onAddNote, on
             setSearchTerm(`#${tag}`);
         }
     };
-
-    const commonStyle = { width: '100%', padding: '8px', marginBottom: '10px', background: '#1e1e1e', border: '1px solid #3e3e42', color: 'white', borderRadius: '4px', boxSizing: 'border-box', fontSize: '14px' };
-
-    // looking if the user is currently searching for something
+    const commonStyle = {
+        width: '100%',
+        padding: '8px',
+        marginBottom: '10px',
+        background: 'var(--input-bg)',
+        border: '1px solid var(--border-color)',
+        color: 'var(--text-color)',
+        borderRadius: '4px',
+        boxSizing: 'border-box',
+        fontSize: '14px'
+    };
     const isSearching = searchTerm.trim() !== "" || selectedTag !== null;
-
-    // looking for ROOT elements (those that are NOT in folders, parent/folder === null)
     const rootFolders = folders.filter(f => f.parent === null);
     const rootNotes = notes.filter(n => n.folders === null);
-
     return (
         <div className="sidebar">
             <div className="sidebar-header">MkBible
-                <div style={{ fontSize: '0.8rem', color: '#666', marginTop: '5px' }}>
-                    Logged in as: <span style={{ color: '#78a9ff' }}>{username}</span>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-faint)', marginTop: '5px' }}>
+                    {t.loggedInAs}: <span style={{ color: 'var(--accent-color)' }}>{username}</span>
                 </div>
             </div>
-
-            {/* search */}
             <input
                 type="text"
-                placeholder="Search notes..."
+                placeholder={t.searchPlaceholder}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 style={commonStyle}
             />
-
-            {/* tag cloud */}
             {uniqueTags.length > 0 && (
                 <div style={{ marginBottom: '10px' }}>
                     <div
                         onClick={() => setIsTagsOpen(!isTagsOpen)}
-                        style={{ fontSize: '0.8rem', color: '#888', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', padding: '0 5px' }}
+                        style={{ fontSize: '0.8rem', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', padding: '0 5px' }}
                     >
-                        <span>Tags ({uniqueTags.length})</span>
+                        <span>{t.tags} ({uniqueTags.length})</span>
                         <span>{isTagsOpen ? '▲' : '▼'}</span>
                     </div>
-
                     {isTagsOpen && (
                         <div className="tags-cloud">
                             <span
                                 className={`tag-pill ${searchTerm === "" ? 'selected' : ''}`}
                                 onClick={() => setSearchTerm("")}
                             >
-                                All
+                                {t.all}
                             </span>
                             {uniqueTags.map(tag => (
                                 <span
@@ -266,22 +252,16 @@ const Sidebar = ({ notes, folders =[], activeNoteId, onSelectNote, onAddNote, on
                     )}
                 </div>
             )}
-
-            {/* graph button */}
             <button
                 onClick={onOpenGraph}
-                style={{ ...commonStyle, background: '#2d2d30', color: '#aaa', cursor: 'pointer', marginBottom: '15px' }}
+                style={{ ...commonStyle, background: 'var(--panel-bg)', color: 'var(--text-muted)', cursor: 'pointer', marginBottom: '15px' }}
             >
-                🕸 Open Graph View
+                🕸 {t.openGraphView}
             </button>
-
-            {/* list (tree or search) */}
             <div className="notes-list" style={{ flex: 1, overflowY: 'auto' }}>
-
                 {isSearching ? (
-                    /* search (flat  list) */
                     <>
-                        <div style={{ padding: '5px', fontSize: '0.8rem', color: '#666' }}>Search results:</div>
+                        <div style={{ padding: '5px', fontSize: '0.8rem', color: 'var(--text-faint)' }}>{t.searchResults}</div>
                         {filteredNotes.map((note) => (
                             <NoteItem
                                 key={`search-note-${note.id}`}
@@ -289,18 +269,17 @@ const Sidebar = ({ notes, folders =[], activeNoteId, onSelectNote, onAddNote, on
                                 activeNoteId={activeNoteId}
                                 onSelectNote={onSelectNote}
                                 onDeleteNote={onDeleteNote}
+                                t={t}
                             />
                         ))}
                         {filteredNotes.length === 0 && (
-                            <div style={{ color: '#668', fontSize: '0.8rem', textAlign: 'center', marginTop: '20px' }}>
-                                No notes found
+                            <div style={{ color: 'var(--text-faint)', fontSize: '0.8rem', textAlign: 'center', marginTop: '20px' }}>
+                                {t.noNotesFound}
                             </div>
                         )}
                     </>
                 ) : (
-                    /* folder tree (default view) */
                     <>
-                        {/* render root folders firstly */}
                         {rootFolders.map(folder => (
                             <FolderTree
                                 key={`folder-${folder.id}`}
@@ -314,10 +293,9 @@ const Sidebar = ({ notes, folders =[], activeNoteId, onSelectNote, onAddNote, on
                                 onDeleteNote={onDeleteNote}
                                 onDeleteFolder={onDeleteFolder}
                                 onRenameFolder={onRenameFolder}
+                                t={t}
                             />
                         ))}
-
-                        {/*  render the root notes secondly */}
                         {rootNotes.map(note => (
                             <NoteItem
                                 key={`root-note-${note.id}`}
@@ -325,19 +303,18 @@ const Sidebar = ({ notes, folders =[], activeNoteId, onSelectNote, onAddNote, on
                                 activeNoteId={activeNoteId}
                                 onSelectNote={onSelectNote}
                                 onDeleteNote={onDeleteNote}
+                                t={t}
                             />
                         ))}
                     </>
                 )}
             </div>
-
-            {/* control buttons */}
-            <div style={{ marginTop: 'auto', paddingTop: '10px', borderTop: '1px solid #3e3e42', display: 'flex', gap: '5px' }}>
+            <div style={{ marginTop: 'auto', paddingTop: '10px', borderTop: '1px solid var(--border-color)', display: 'flex', gap: '5px' }}>
                 <button
                     className="add-btn"
                     onClick={() => onAddFolder(null)}
-                    style={{ flex: 1, background: '#3e3e42', color: '#ffbdf2' }}
-                    title="New Folder"
+                    style={{ flex: 1, background: 'var(--border-color)', color: 'var(--accent-folder)' }}
+                    title={t.newFolder}
                 >
                     + 📁
                 </button>
@@ -345,20 +322,19 @@ const Sidebar = ({ notes, folders =[], activeNoteId, onSelectNote, onAddNote, on
                     className="add-btn"
                     onClick={() => onAddNote(null, null)}
                     style={{ flex: 1 }}
-                    title="New Note"
+                    title={t.newNote}
                 >
                     + 📄
                 </button>
                 <button
                     onClick={onLogout}
-                    style={{ padding: '10px', background: '#3e3e42', border: 'none', color: '#ff5555', borderRadius: '4px', cursor: 'pointer' }}
-                    title="Logout"
+                    style={{ padding: '10px', background: 'var(--border-color)', border: 'none', color: 'var(--accent-danger)', borderRadius: '4px', cursor: 'pointer' }}
+                    title={t.logout}
                 >
-                    Exit
+                    {t.logout}
                 </button>
             </div>
         </div>
     );
 };
-
 export default Sidebar;
