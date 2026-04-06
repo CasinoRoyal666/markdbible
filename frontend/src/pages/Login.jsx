@@ -1,62 +1,60 @@
-import React, { useState, useEffect } from "react";
-import api from '../api.js'
+import React, { useState } from "react";
+import api from '../api.js';
 import { useNavigate } from "react-router-dom";
+import { useSettings } from '../context/SettingsContext.jsx';
+import { translations } from '../locales/translations.js';
 
 function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-
+    const { language } = useSettings();
+    const t = translations[language];
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         try {
-            //request token
-            const res = await api.post("token/", {username, password});
-
-            //save ACCESS/REFRESH tokens
+            const res = await api.post("token/", { username, password });
             localStorage.setItem("access", res.data.access);
             localStorage.setItem("refresh", res.data.refresh);
             localStorage.setItem("username", username);
-
-            //main
             navigate("/");
         } catch (error) {
-            alert("Auth error, recheck login and passport");
+            alert(t.authError);
             console.error(error);
         } finally {
             setLoading(false);
         }
     };
-
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', flexDirection: 'column' }}>
-            <h2>Login Page</h2>
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', width: '300px', gap: '10px'}}>
+        <div className="auth-container">
+            <h2>{t.loginTitle}</h2>
+            <form onSubmit={handleSubmit} className="auth-form">
                 <input
                     type="text"
-                    placeholder="Username"
+                    placeholder={t.usernamePlaceholder}
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    style={{ padding: '10px' }}
+                    className="auth-input"
                 />
                 <input
                     type="password"
-                    placeholder="Password"
+                    placeholder={t.passwordPlaceholder}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    style={{ padding: '10px' }}
+                    className="auth-input"
                 />
-                <button type="submit" disabled={loading} style={{ padding: '10px', cursor: 'pointer' }}>
-                    {loading ? "Logging in..." : "Login"}
+                <button type="submit" disabled={loading} className="auth-btn">
+                    {loading ? t.loggingIn : t.login}
                 </button>
             </form>
-            <p style={{ marginTop: '20px' }}>
-                No account? <a href="/register" style={{ color: '#78a9ff' }}>Registration</a>
+            <p className="auth-link">
+                {t.noAccount} <a href="/register">{t.registration}</a>
             </p>
         </div>
-    )
+    );
 }
+
 
 export default Login;

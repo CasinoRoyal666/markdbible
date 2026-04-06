@@ -1,40 +1,38 @@
-import React, {useEffect, useState} from 'react';
-import "../App.css"
+import React, { useEffect, useState } from 'react';
+import "../App.css";
 import api from "../api";
 import Sidebar from "../components/Sidebar.jsx";
 import Editor from "../components/Editor.jsx";
 import GraphView from "../components/GraphView.jsx";
-
+import { useSettings } from '../context/SettingsContext.jsx';
+import { translations } from '../locales/translations.js';
 function Home() {
     const [notes, setNotes] = useState([]);
     const [folders, setFolders] = useState([]);
     const [activeNoteId, setActiveNoteId] = useState(null);
-    const [saveStatus, setSaveStatus] = useState("Saved");
+    const [saveStatus, setSaveStatus] = useState("saved");
     const [isGraphOpen, setIsGraphOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
-
+    const { language } = useSettings();
+    const t = translations[language];
     useEffect(() => {
         const fetchNotes = async () => {
             try {
                 const notesRes = await api.get('notes/');
-                const foldersRes = await api.get('folders/')
-
+                const foldersRes = await api.get('folders/');
                 const notesData = notesRes.data.results || notesRes.data;
-                const foldersData = foldersRes.data.results || foldersRes.data
-
+                const foldersData = foldersRes.data.results || foldersRes.data;
                 setNotes(notesData);
                 setFolders(foldersData);
             } catch (error) {
                 console.error(error);
             }
-        }
+        };
         fetchNotes();
     }, []);
-
     const onAddFolder = async (parentFolderId = null) => {
-        const folderName = window.prompt("Write new folder name:");
+        const folderName = window.prompt(t.newFolderPrompt);
         if (!folderName) return;
-
         try {
             const response = await api.post('folders/', {
                 name: folderName,
@@ -43,26 +41,24 @@ function Home() {
             setFolders([...folders, response.data]);
         } catch (error) {
             console.error("Error creating folder: ", error);
-            alert("Error while creating new folder");
+            alert(t.createFolderError);
         }
     };
-
     const addNote = async (customTitle = null, folderId = null) => {
         try {
             const response = await api.post('notes/', {
-                title: typeof customTitle === 'string' ? customTitle: "NewNote",
+                title: typeof customTitle === 'string' ? customTitle : "NewNote",
                 content: "",
                 folders: folderId
             });
             const newNote = response.data;
             setNotes([newNote, ...notes]);
             setActiveNoteId(newNote.id);
-            return newNote
+            return newNote;
         } catch (error) {
-            console.error("Error creating note:",error);
+            console.error("Error creating note:", error);
         }
     };
-
     const onUpdateNote = (updatedNote) => {
         const updatedNotesArray = notes.map((note) => {
             if (note.id === updatedNote.id) {
@@ -71,12 +67,10 @@ function Home() {
             return note;
         });
         setNotes(updatedNotesArray);
-        setSaveStatus("Unsaved");
+        setSaveStatus("unsaved");
     };
-
     const onSelectNote = async (noteId) => {
         setActiveNoteId(noteId);
-
         try {
             const response = await api.get(`notes/${noteId}/`);
             const fullNoteData = response.data;
@@ -87,17 +81,12 @@ function Home() {
             console.error("Error loading full note:", error);
         }
     };
-
     const onDeleteNote = async (noteId) => {
-        const confirmDelete = window.confirm("Are you sure you want to delete this note?")
+        const confirmDelete = window.confirm(t.confirmDeleteNote);
         if (!confirmDelete) return;
-
         try {
-            // delete on server
             await api.delete(`notes/${noteId}/`);
-            // delete from state
             setNotes(notes.filter((note) => note.id !== noteId));
-            // if note was open => close redactor
             if (activeNoteId === noteId) {
                 setActiveNoteId(null);
             }
@@ -105,7 +94,6 @@ function Home() {
             console.error("Error deleting note:", error);
         }
     };
-
     const getAllChildFolderIds = (folderId) => {
         const directChildren = folders.filter(f => f.parent === folderId);
         let allIds = directChildren.map(f => f.id);
@@ -114,21 +102,16 @@ function Home() {
         });
         return allIds;
     };
-
     const onDeleteFolder = async (folderId) => {
         const allFolderIds = [folderId, ...getAllChildFolderIds(folderId)];
         const containedNotes = notes.filter(n => allFolderIds.includes(n.folders));
         const childFoldersCount = allFolderIds.length - 1;
-
-        let message = `Delete this folder?`;
+        let message = t.confirmDeleteFolder;
         if (containedNotes.length > 0 || childFoldersCount > 0) {
-            message = `This folder contains ${childFoldersCount} subfolder(s) and ${containedNotes.length} note(s).
-            Everything will be deleted. Continue?`;
+            message = t.confirmDeleteFolderWithContent(childFoldersCount, containedNotes.length);
         }
-
         const confirmed = window.confirm(message);
         if (!confirmed) return;
-
         try {
             await api.delete(`folders/${folderId}/`);
             setFolders(folders.filter(f => !allFolderIds.includes(f.id)));
@@ -138,65 +121,65 @@ function Home() {
             }
         } catch (error) {
             console.error("Error deleting folder:", error);
-            alert("Error while deleting folder");
+            alert(t.deleteFolderError);
         }
     };
-
     const onRenameFolder = async (folderId, newName) => {
         try {
-            const response = await api.patch(`folders/${folderId}/`, {name: newName});
+            const response = await api.patch(`folders/${folderId}/`, { name: newName });
             setFolders(folders.map(f => f.id === folderId ? response.data : f));
         } catch (error) {
             console.error("Error renaming folder:", error);
-            alert("Error while renaming folder");
+            alert(t.renameFolderError);
         }
     };
-    // graph node click handler
     const onNodeClickFromGraph = (noteId) => {
         setIsGraphOpen(false);
         onSelectNote(noteId);
-    }
-
+    };
     const onTagClick = (tagName) => {
         const cleanTag = tagName.replace('#', '');
         setSearchTerm(`#${cleanTag}`);
     };
-
     const activeNote = notes.find((note) => note.id === activeNoteId);
-
-
     const onWikiLinkClick = async (title) => {
         const targetNote = notes.find(n => n.title.toLowerCase() === title.toLowerCase());
-
         if (targetNote) {
             onSelectNote(targetNote.id);
         } else {
-            const confirmed = window.confirm(`Note "${title}" was not found. Create new?`);
+            const confirmed = window.confirm(t.noteNotFound(title));
             if (confirmed) {
                 await addNote(title);
             }
         }
     };
-
     useEffect(() => {
-        if (!activeNote || saveStatus === 'Saved') return;
+        if (!activeNote || saveStatus === 'saved') return;
         const timeoutId = setTimeout(async () => {
-            setSaveStatus("Saving...");
+            setSaveStatus("saving");
             try {
                 await api.patch(`notes/${activeNote.id}/`, {
                     title: activeNote.title,
                     content: activeNote.content
                 });
-                setSaveStatus("Saved");
+                setSaveStatus("saved");
                 console.log("auto-saved!");
             } catch (error) {
                 console.error("error while auto-save: ", error);
-                setSaveStatus("Error");
+                setSaveStatus("error");
             }
         }, 1000);
         return () => clearTimeout(timeoutId);
     }, [activeNote, saveStatus]);
-
+    const getSaveStatusText = () => {
+        switch (saveStatus) {
+            case 'saved': return t.saveStatus_saved;
+            case 'saving': return t.saveStatus_saving;
+            case 'unsaved': return t.saveStatus_unsaved;
+            case 'error': return t.saveStatus_error;
+            default: return '';
+        }
+    };
     return (
         <div className="app-container">
             <Sidebar
@@ -213,17 +196,10 @@ function Home() {
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
             />
-
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                <div style={{
-                    textAlign: 'right',
-                    padding: '5px 20px',
-                    fontSize: '0.8rem',
-                    color: saveStatus === 'Error' ? 'red' : '#666'
-                }}>
-                    {saveStatus}
+            <div className="home-main">
+                <div className={`save-status ${saveStatus === 'error' ? 'error' : ''}`}>
+                    {getSaveStatusText()}
                 </div>
-
                 <Editor
                     activeNote={activeNote}
                     onUpdateNote={onUpdateNote}
@@ -240,5 +216,4 @@ function Home() {
         </div>
     );
 }
-
 export default Home;
