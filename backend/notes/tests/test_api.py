@@ -1,8 +1,8 @@
-from http.client import responses
-
 import pytest
 from rest_framework.test import APIClient
 from .factories import UserFactory, NoteFactory, FolderFactory
+from ..models import Note
+from ..views import WELCOME_NOTE_TITLE
 
 @pytest.mark.django_db
 class TestNoteAPI:
@@ -82,3 +82,63 @@ class TestFolderApi:
         assert response.status_code == 200
         assert len(response.data) == 1
         assert response.data[0]['name'] == 'My Folder'
+
+
+@pytest.mark.django_db
+class TestRegistrationOnboarding:
+    def setup_method(self):
+        self.client = APIClient()
+        self.register_url = '/api/register/'
+
+    def test_registration_creates_welcome_note(self):
+        response = self.client.post(self.register_url, {
+            'username': 'newuser',
+            'password': 'StrongPass123!',
+            'email': 'newuser@example.com',
+        })
+        assert response.status_code == 201
+        assert Note.objects.filter(
+            user__username='newuser',
+            title=WELCOME_NOTE_TITLE,
+        ).exists()
+
+    def test_welcome_note_is_private(self):
+        self.client.post(self.register_url, {
+            'username': 'newuser2',
+            'password': 'StrongPass123!',
+            'email': 'newuser2@example.com',
+        })
+        note = Note.objects.get(user__username='newuser2', title=WELCOME_NOTE_TITLE)
+        assert note.is_public is False
+
+    def test_welcome_note_contains_markdown_basics(self):
+        self.client.post(self.register_url, {
+            'username': 'newuser3',
+            'password': 'StrongPass123!',
+            'email': 'newuser3@example.com',
+        })
+        note = Note.objects.get(user__username='newuser3', title=WELCOME_NOTE_TITLE)
+        assert '**bold**' in note.content
+        assert '*italic*' in note.content
+        assert '- [ ]' in note.content
+
+    def test_welcome_note_contains_app_features(self):
+        self.client.post(self.register_url, {
+            'username': 'newuser4',
+            'password': 'StrongPass123!',
+            'email': 'newuser4@example.com',
+        })
+        note = Note.objects.get(user__username='newuser4', title=WELCOME_NOTE_TITLE)
+        # wikilinks feature
+        assert '[[' in note.content
+        # hashtags feature
+        assert '#' in note.content
+
+    def test_each_user_gets_own_welcome_note(self):
+        for i in range(1, 4):
+            self.client.post(self.register_url, {
+                'username': f'multi_user_{i}',
+                'password': 'StrongPass123!',
+                'email': f'multi{i}@example.com',
+            })
+        assert Note.objects.filter(title=WELCOME_NOTE_TITLE).count() == 3
