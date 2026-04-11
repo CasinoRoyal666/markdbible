@@ -13,6 +13,7 @@ from .serializers import (
     NoteListSerializer,
     UserSerializer,
 )
+# TODO: Move this variables into separate file for code cleanliness
 
 WELCOME_NOTE_TITLE = "Welcome to MarkDBible!"
 
@@ -140,7 +141,7 @@ Images are uploaded and embedded automatically.
 > **Tip:** Delete this note whenever you're ready — it's just a regular note.
 """
 
-
+# TODO: Add russian language support. System detects user language and generates welcome note with it
 def create_welcome_note(user):
     """Create an onboarding note for a newly registered user."""
     return Note.objects.create(
