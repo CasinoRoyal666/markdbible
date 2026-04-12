@@ -8,6 +8,7 @@ const Editor = ({ activeNote, onUpdateNote, onTagClick, onWikiLinkClick }) => {
     const fileInputRef = useRef(null);
     const textareaRef = useRef(null);
     const [isShareOpen, setIsShareOpen] = useState(false);
+    const [backlinksOpen, setBacklinksOpen] = useState(true);
     const sharePopoverRef = useRef(null);
     const { language } = useSettings();
     const t = translations[language];
@@ -208,15 +209,25 @@ const Editor = ({ activeNote, onUpdateNote, onTagClick, onWikiLinkClick }) => {
                 />
             )}
             {activeNote.backlinks && activeNote.backlinks.length > 0 && (
-                <div style={{ marginTop: 'auto', paddingTop: '20px', borderTop: '1px solid var(--border-color)' }}>
-                    <h4 style={{ color: 'var(--text-faint)', marginBottom: '10px' }}>{t.linkedToThisNote}</h4>
-                    <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-                        {activeNote.backlinks.map(link => (
-                            <span key={link.id} className="backlink-chip">
-                                [[{link.title}]]
-                            </span>
-                        ))}
+                <div className="backlinks-section">
+                    <div className="backlinks-header" onClick={() => setBacklinksOpen(!backlinksOpen)}>
+                        <span className="backlinks-toggle">{backlinksOpen ? '▾' : '▸'}</span>
+                        <span>🔗 {activeNote.backlinks.length} {t.linkedToThisNote}</span>
                     </div>
+                    {backlinksOpen && (
+                        <div className="backlinks-list">
+                            {activeNote.backlinks.map(link => (
+                                <div
+                                    key={link.id}
+                                    className="backlink-item"
+                                    onClick={() => onWikiLinkClick(link.title)}
+                                >
+                                    <span className="backlink-title">📄 {link.title}</span>
+                                    <span className="backlink-arrow">→</span>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             )}
         </div>

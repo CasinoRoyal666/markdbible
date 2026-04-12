@@ -256,13 +256,57 @@
     cursor: pointer;
     flex-shrink: 0;
 }
-.backlink-chip {
-    padding: 5px 10px;
+/* Backlinks section */
+.backlinks-section {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-color);
+}
+.backlinks-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    color: var(--text-faint);
+    font-size: 0.85rem;
+    padding: 4px 0;
+    user-select: none;
+    transition: color 0.2s;
+}
+.backlinks-header:hover {
+    color: var(--text-muted);
+}
+.backlinks-toggle {
+    font-size: 0.7rem;
+    transition: transform 0.2s;
+}
+.backlinks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 8px;
+}
+.backlink-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 10px;
     background: var(--panel-bg);
-    border-radius: 15px;
-    font-size: 0.8rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.85rem;
+}
+.backlink-item:hover {
+    background: var(--hover-bg);
+}
+.backlink-title {
     color: var(--accent-color);
-    border: 1px solid var(--border-color);
+    font-weight: 500;
+}
+.backlink-arrow {
+    color: var(--text-faint);
+    font-size: 0.8rem;
 }
 
 .auth-container {
