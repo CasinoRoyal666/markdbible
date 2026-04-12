@@ -5,10 +5,12 @@ import { useSettings } from '../context/SettingsContext.jsx';
 import { translations } from '../locales/translations.js';
 const Editor = ({ activeNote, onUpdateNote, onTagClick, onWikiLinkClick }) => {
     const [isPreview, setIsPreview] = useState(false);
+    const [isLinksPanelOpen, setIsLinksPanelOpen] = useState(false);
+    const [backlinksOpen, setBacklinksOpen] = useState(true);
+    const [outgoingLinksOpen, setOutgoingLinksOpen] = useState(true);
     const fileInputRef = useRef(null);
     const textareaRef = useRef(null);
     const [isShareOpen, setIsShareOpen] = useState(false);
-    const [backlinksOpen, setBacklinksOpen] = useState(true);
     const sharePopoverRef = useRef(null);
     const { language } = useSettings();
     const t = translations[language];
@@ -97,8 +99,10 @@ const Editor = ({ activeNote, onUpdateNote, onTagClick, onWikiLinkClick }) => {
         }
     };
     return (
-        <div className="editor-pane" key={activeNote.id}>
-            <div className="editor-header">
+        <>
+        <div className="editor-container-inner" key={activeNote.id}>
+            <div className="editor-pane">
+                <div className="editor-header">
                 <input
                     type="text"
                     className="title-input"
@@ -185,6 +189,18 @@ const Editor = ({ activeNote, onUpdateNote, onTagClick, onWikiLinkClick }) => {
                     >
                         {isPreview ? t.edit : t.preview}
                     </button>
+                    <button
+                        onClick={() => setIsLinksPanelOpen(!isLinksPanelOpen)}
+                        className={`editor-links-toggle-btn ${isLinksPanelOpen ? 'active' : ''}`}
+                        title={t.linksPanelTitle}
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                             fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+                             strokeLinejoin="round">
+                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                        </svg>
+                    </button>
                 </div>
             </div>
             {isPreview ? (
@@ -208,29 +224,100 @@ const Editor = ({ activeNote, onUpdateNote, onTagClick, onWikiLinkClick }) => {
                     onPaste={handlePaste}
                 />
             )}
-            {activeNote.backlinks && activeNote.backlinks.length > 0 && (
-                <div className="backlinks-section">
-                    <div className="backlinks-header" onClick={() => setBacklinksOpen(!backlinksOpen)}>
-                        <span className="backlinks-toggle">{backlinksOpen ? '▾' : '▸'}</span>
-                        <span>🔗 {activeNote.backlinks.length} {t.linkedToThisNote}</span>
-                    </div>
-                    {backlinksOpen && (
-                        <div className="backlinks-list">
-                            {activeNote.backlinks.map(link => (
-                                <div
-                                    key={link.id}
-                                    className="backlink-item"
-                                    onClick={() => onWikiLinkClick(link.title)}
-                                >
-                                    <span className="backlink-title">📄 {link.title}</span>
-                                    <span className="backlink-arrow">→</span>
+            </div>
+        </div>
+        {isLinksPanelOpen && (
+            <div className="links-sidebar">
+                <div className="links-sidebar-header">
+                    <span className="links-sidebar-title">{t.linksPanelTitle}</span>
+                    <button
+                        className="links-sidebar-close"
+                        onClick={() => setIsLinksPanelOpen(false)}
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                             fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+                             strokeLinejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"/>
+                            <line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                    </button>
+                </div>
+                <div className="links-sidebar-content">
+                    {activeNote.backlinks && activeNote.backlinks.length > 0 && (
+                        <div className="sidebar-links-section">
+                            <div className="sidebar-links-header" onClick={() => setBacklinksOpen(!backlinksOpen)}>
+                                <span className="sidebar-links-toggle">{backlinksOpen ? '▾' : '▸'}</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
+                                     fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+                                     strokeLinejoin="round">
+                                    <path d="M15 7h3a5 5 0 0 1 0 10h-3m-6 0H6a5 5 0 0 1 0-10h3"/>
+                                    <line x1="8" y1="12" x2="16" y2="12"/>
+                                </svg>
+                                <span>{t.linkedMentions}</span>
+                                <span className="sidebar-links-count">{activeNote.backlinks.length}</span>
+                            </div>
+                            {backlinksOpen && (
+                                <div className="sidebar-links-list">
+                                    {activeNote.backlinks.map(link => (
+                                        <div
+                                            key={link.id}
+                                            className="sidebar-link-item"
+                                            onClick={() => onWikiLinkClick(link.title)}
+                                        >
+                                            <span className="sidebar-link-item-title">{link.title}</span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11"
+                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+                                                 strokeLinecap="round" strokeLinejoin="round">
+                                                <polyline points="9 18 15 12 9 6"/>
+                                            </svg>
+                                        </div>
+                                    ))}
                                 </div>
-                            ))}
+                            )}
+                        </div>
+                    )}
+                    {activeNote.links && activeNote.links.length > 0 && (
+                        <div className="sidebar-links-section">
+                            <div className="sidebar-links-header" onClick={() => setOutgoingLinksOpen(!outgoingLinksOpen)}>
+                                <span className="sidebar-links-toggle">{outgoingLinksOpen ? '▾' : '▸'}</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
+                                     fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+                                     strokeLinejoin="round">
+                                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                                </svg>
+                                <span>{t.outgoingLinks}</span>
+                                <span className="sidebar-links-count">{activeNote.links.length}</span>
+                            </div>
+                            {outgoingLinksOpen && (
+                                <div className="sidebar-links-list">
+                                    {activeNote.links.map(link => (
+                                        <div
+                                            key={link.id}
+                                            className="sidebar-link-item"
+                                            onClick={() => onWikiLinkClick(link.title)}
+                                        >
+                                            <span className="sidebar-link-item-title">{link.title}</span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11"
+                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+                                                 strokeLinecap="round" strokeLinejoin="round">
+                                                <polyline points="9 18 15 12 9 6"/>
+                                            </svg>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    )}
+                    {(!activeNote.backlinks || activeNote.backlinks.length === 0) && (!activeNote.links || activeNote.links.length === 0) && (
+                        <div className="links-sidebar-empty">
+                            {t.noLinks}
                         </div>
                     )}
                 </div>
-            )}
-        </div>
+            </div>
+        )}
+        </>
     );
 };
 

@@ -200,12 +200,14 @@ function Home() {
                 <div className={`save-status ${saveStatus === 'error' ? 'error' : ''}`}>
                     {getSaveStatusText()}
                 </div>
-                <Editor
-                    activeNote={activeNote}
-                    onUpdateNote={onUpdateNote}
-                    onTagClick={onTagClick}
-                    onWikiLinkClick={onWikiLinkClick}
-                />
+                <div className="editor-container">
+                    <Editor
+                        activeNote={activeNote}
+                        onUpdateNote={onUpdateNote}
+                        onTagClick={onTagClick}
+                        onWikiLinkClick={onWikiLinkClick}
+                    />
+                </div>
             </div>
             {isGraphOpen && (
                 <GraphView
