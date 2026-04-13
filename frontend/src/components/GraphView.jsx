@@ -72,7 +72,7 @@ const GraphView = ({ onClose, onNodeClick }) => {
         // Обводка для найденных / выбранных
         if (isMatch || isSelected) {
             ctx.beginPath();
-            ctx.arc(node.x, node.y, r + 3, 0, 2 * Math.PI);
+            ctx.arc(node.x, node.y, r + 1.5, 0, 2 * Math.PI);
             ctx.fillStyle = isSelected ? '#ffcc00' : '#ff6600';
             ctx.fill();
         }

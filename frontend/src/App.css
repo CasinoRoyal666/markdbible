@@ -352,7 +352,7 @@
 }
 .graph-btn {
     padding: 8px 18px;
-    background: var(--border-color);
+    background: var(--panel-bg);
     color: var(--text-color);
     border: none;
     border-radius: 20px;
@@ -365,11 +365,11 @@
     background: var(--hover-bg);
 }
 .graph-btn--close {
-    background: #c0392b22;
+    background: #c0392b44;
     color: var(--text-color);
 }
 .graph-btn--close:hover {
-    background: #c0392b55;
+    background: #c0392b88;
 }
 /* Индикатор загрузки */
 .graph-loading {
@@ -408,7 +408,7 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
-    box-shadow: -4px 0 16px rgba(0,0,0,0.15);
+    box-shadow: -4px 0 16px var(--shadow);
 }
 .graph-detail-close {
     position: absolute;
@@ -448,9 +448,9 @@
     font-size: 0.78rem;
     padding: 2px 8px;
     border-radius: 10px;
-    background: var(--accent-color, #0066cc22);
-    color: var(--accent-color, #0066cc);
-    border: 1px solid var(--accent-color, #0066cc44);
+    background: rgba(0, 102, 204, 0.12);
+    color: var(--accent-color);
+    border: 1px solid rgba(0, 102, 204, 0.35);
 }
 .graph-detail-section {
     display: flex;

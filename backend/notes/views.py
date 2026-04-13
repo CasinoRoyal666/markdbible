@@ -202,7 +202,16 @@ class NoteViewSet(viewsets.ModelViewSet):
         """
         notes = self.get_queryset()
 
-        nodes_data = [{"id": note.id, "label": note.title} for note in notes]
+        nodes_data = [
+            {
+                "id": note.id,
+                "label": note.title,
+                "folder_id": note.folders_id,
+                "folder_name": note.folders.name if note.folders else None,
+                "tags": [tag.name for tag in note.tags.all()],
+            }
+            for note in notes
+        ]
 
         edge_ids = set()
         edges_data = []

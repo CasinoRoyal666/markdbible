@@ -63,6 +63,11 @@ export const translations = {
         noteNotFound: (title) => `Note "${title}" was not found. Create new?`,
         // GraphView
         closeGraph: 'Close Graph',
+        graphSearch: 'Search notes...',
+        graphFit: 'Fit to screen',
+        graphOutgoing: 'Links to',
+        graphIncoming: 'Linked from',
+        graphOpenNote: 'Open note',
         // SharedNote
         loading: 'Loading...',
         noteNotFoundTitle: 'Note not found',
@@ -142,6 +147,11 @@ export const translations = {
         noteNotFound: (title) => `Заметка "${title}" не найдена. Создать новую?`,
         // GraphView
         closeGraph: 'Закрыть граф',
+        graphSearch: 'Поиск заметок...',
+        graphFit: 'По экрану',
+        graphOutgoing: 'Ссылается на',
+        graphIncoming: 'Ссылки из',
+        graphOpenNote: 'Открыть заметку',
         // SharedNote
         loading: 'Загрузка...',
         noteNotFoundTitle: 'Заметка не найдена',
