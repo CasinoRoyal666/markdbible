@@ -324,9 +324,183 @@
     height: 100vh;
     background-color: var(--bg-color);
     z-index: 1000;
+}
+/* Toolbar (поиск + кнопки сверху) */
+.graph-toolbar {
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
-    justify-content: center;
+    gap: 8px;
     align-items: center;
+    z-index: 1001;
+}
+.graph-search {
+    padding: 8px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-color);
+    color: var(--text-color);
+    font-size: 0.9rem;
+    width: 220px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+.graph-search:focus {
+    border-color: var(--accent-color, #0066cc);
+}
+.graph-btn {
+    padding: 8px 18px;
+    background: var(--border-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+    white-space: nowrap;
+}
+.graph-btn:hover {
+    background: var(--hover-bg);
+}
+.graph-btn--close {
+    background: #c0392b22;
+    color: var(--text-color);
+}
+.graph-btn--close:hover {
+    background: #c0392b55;
+}
+/* Индикатор загрузки */
+.graph-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1002;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.graph-spinner {
+    width: 48px;
+    height: 48px;
+    border: 5px solid var(--border-color);
+    border-top-color: var(--accent-color, #0066cc);
+    border-radius: 50%;
+    animation: graph-spin 0.8s linear infinite;
+}
+@keyframes graph-spin {
+    to { transform: rotate(360deg); }
+}
+/* Панель деталей (справа) */
+.graph-detail-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 280px;
+    height: 100vh;
+    background: var(--bg-color);
+    border-left: 1px solid var(--border-color);
+    padding: 24px 20px;
+    z-index: 1001;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: -4px 0 16px rgba(0,0,0,0.15);
+}
+.graph-detail-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.1rem;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+.graph-detail-close:hover {
+    opacity: 1;
+}
+.graph-detail-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    padding-right: 24px;
+    color: var(--text-color);
+    word-break: break-word;
+}
+.graph-detail-meta {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--text-color);
+    opacity: 0.7;
+}
+.graph-detail-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.graph-tag {
+    font-size: 0.78rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: var(--accent-color, #0066cc22);
+    color: var(--accent-color, #0066cc);
+    border: 1px solid var(--accent-color, #0066cc44);
+}
+.graph-detail-section {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.graph-detail-section-title {
+    margin: 0;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.5;
+    color: var(--text-color);
+}
+.graph-detail-section ul {
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.graph-link-btn {
+    background: none;
+    border: none;
+    color: var(--accent-color, #0066cc);
+    cursor: pointer;
+    font-size: 0.88rem;
+    text-align: left;
+    padding: 2px 0;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+.graph-link-btn:hover {
+    opacity: 0.75;
+}
+.graph-open-btn {
+    margin-top: 16px;
+    padding: 10px;
+    background: var(--accent-color, #0066cc);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: opacity 0.2s;
+}
+.graph-open-btn:hover {
+    opacity: 0.85;
 }
 .graph-close-btn {
     position: absolute;
@@ -341,9 +515,6 @@
     z-index: 1001;
     font-size: 1rem;
     transition: background 0.2s;
-}
-.graph-close-btn:hover {
-    background: var(--hover-bg);
 }
 
 /* SharedNote page */
