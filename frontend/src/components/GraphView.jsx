@@ -3,7 +3,7 @@ import ForceGraph from "react-force-graph-2d";
 import api from '../api.js';
 import { useSettings } from '../context/SettingsContext.jsx';
 import { translations } from '../locales/translations.js';
-// Палитра цветов для папок (повторяется если папок больше)
+// folders color palette
 const FOLDER_PALETTE = [
     '#e05c5c', '#e0995c', '#d4c84a', '#5cb85c',
     '#5cb8b2', '#5c7de0', '#a05ce0', '#e05cb2',
@@ -43,7 +43,7 @@ const GraphView = ({ onClose, onNodeClick }) => {
     const bgColor = theme === 'light' ? '#ffffff' : '#1e1e1e';
     const linkColor = theme === 'light' ? '#cccccc' : '#444444';
     const textColor = theme === 'light' ? '#111111' : '#eeeeee';
-    // Подсчёт входящих связей для размера узла
+    // links counting for the size of node circle
     const incomingCount = {};
     graphData.nodes.forEach(n => { incomingCount[n.id] = 0; });
     graphData.links.forEach(l => {
@@ -55,7 +55,7 @@ const GraphView = ({ onClose, onNodeClick }) => {
         const bonus = (incomingCount[node.id] || 0) * 2;
         return base + bonus;
     };
-    // Поиск: список совпадений
+    // search
     const matchedIds = searchQuery.trim()
         ? new Set(
             graphData.nodes
@@ -63,34 +63,34 @@ const GraphView = ({ onClose, onNodeClick }) => {
                 .map(n => n.id)
         )
         : null;
-    // Кастомная отрисовка узла с меткой
+
     const paintNode = useCallback((node, ctx, globalScale) => {
         const isMatch = matchedIds ? matchedIds.has(node.id) : false;
         const isSelected = selectedNode && selectedNode.id === node.id;
         const r = Math.sqrt(getNodeVal(node)) * 4;
         const color = getFolderColor(node.folder_id, theme);
-        // Обводка для найденных / выбранных
+        // circle for founded/selected dots
         if (isMatch || isSelected) {
             ctx.beginPath();
             ctx.arc(node.x, node.y, r + 1.5, 0, 2 * Math.PI);
             ctx.fillStyle = isSelected ? '#ffcc00' : '#ff6600';
             ctx.fill();
         }
-        // Сам узел
+        // node
         ctx.beginPath();
         ctx.arc(node.x, node.y, r, 0, 2 * Math.PI);
         ctx.fillStyle = color;
         ctx.fill();
-        // Метка (показываем всегда если масштаб >= 0.6, иначе только для крупных)
+
         const label = node.label;
         const fontSize = Math.max(10, 14 / globalScale);
         ctx.font = `${fontSize}px Sans-Serif`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'top';
-        // Подложка под текст
+
         const textWidth = ctx.measureText(label).width;
         const padding = 2;
-        ctx.fillStyle = bgColor + 'cc'; // полупрозрачный фон
+        ctx.fillStyle = bgColor + 'cc';
         ctx.fillRect(
             node.x - textWidth / 2 - padding,
             node.y + r + 2,
@@ -106,7 +106,7 @@ const GraphView = ({ onClose, onNodeClick }) => {
     const handleFitScreen = () => {
         if (fgRef.current) fgRef.current.zoomToFit(400, 40);
     };
-    // Данные для панели деталей
+    // data for details panel
     const getLinkedNotes = (node) => {
         if (!node) return { outgoing: [], incoming: [] };
         const nodeMap = Object.fromEntries(graphData.nodes.map(n => [n.id, n]));
@@ -135,7 +135,7 @@ const GraphView = ({ onClose, onNodeClick }) => {
     const { outgoing, incoming } = getLinkedNotes(selectedNode);
     return (
         <div ref={containerRef} className="graph-overlay">
-            {/* Верхняя панель управления */}
+            {/* Top Panel */}
             <div className="graph-toolbar">
                 <input
                     className="graph-search"
@@ -151,7 +151,7 @@ const GraphView = ({ onClose, onNodeClick }) => {
                     {t.closeGraph}
                 </button>
             </div>
-            {/* Индикатор загрузки */}
+            {/* Loading Spinner */}
             {isLoading && (
                 <div className="graph-loading">
                     <div className="graph-spinner" />
@@ -174,7 +174,7 @@ const GraphView = ({ onClose, onNodeClick }) => {
                 linkDirectionalArrowRelPos={1}
                 linkWidth={1.5}
             />
-            {/* Панель деталей */}
+            {/* Details Panel */}
             {selectedNode && (
                 <div className="graph-detail-panel">
                     <button
