@@ -64,18 +64,8 @@ const FolderTree = ({ folder, level = 0, folders, notes, activeNoteId, onSelectN
         <div>
             <div
                 className="folder-item"
-                style={{
-                    marginLeft: `${level * 15}px`,
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    padding: '5px',
-                    cursor: 'pointer',
-                    color: 'var(--text-color)',
-                    borderRadius: '4px'
-                }}
+                style={{ marginLeft: `${level * 15}px` }}
                 onClick={() => setIsOpen(!isOpen)}
-                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--hover-bg)'}
-                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
             >
                 <div
                     style={{ fontWeight: '500' }}
@@ -105,22 +95,22 @@ const FolderTree = ({ folder, level = 0, folders, notes, activeNoteId, onSelectN
                         folder.name
                     )}
                 </div>
-                <div style={{ display: 'flex', gap: '5px' }}>
+                <div className="folder-actions">
                     <button
+                        className="folder-action-btn"
                         onClick={(e) => { e.stopPropagation(); onAddNote(null, folder.id); setIsOpen(true); }}
-                        style={{ background: 'transparent', border: 'none', color: 'var(--accent-color)', cursor: 'pointer', padding: '0 5px' }}
                         title={t.addNoteHere}
                     ><FilePlus size={14} /></button>
                     <button
+                        className="folder-action-btn folder-action-btn--folder"
                         onClick={(e) => { e.stopPropagation(); onAddFolder(folder.id); setIsOpen(true); }}
-                        style={{ background: 'transparent', border: 'none', color: 'var(--accent-folder)', cursor: 'pointer', padding: '0 5px' }}
                         title={t.addSubfolder}
                     ><FolderPlus size={14} /></button>
                     <button
+                        className="folder-action-btn folder-action-btn--danger"
                         onClick={(e) => { e.stopPropagation(); onDeleteFolder(folder.id); }}
-                        style={{ background: 'transparent', border: 'none', color: 'var(--accent-danger)', cursor: 'pointer', padding: '0 5px' }}
                         title={t.deleteFolder}
-                    ><FolderPlus size={14} /></button>
+                    ><Trash2 size={14} /></button>
                 </div>
             </div>
             {isOpen && (
