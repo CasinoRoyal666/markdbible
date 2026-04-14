@@ -3,6 +3,7 @@ import api from '../api.js';
 import MarkdownRenderer from "./MarkdownRenderer.jsx";
 import { useSettings } from '../context/SettingsContext.jsx';
 import { translations } from '../locales/translations.js';
+import { Copy } from 'lucide-react';
 const Editor = ({ activeNote, onUpdateNote, onTagClick, onWikiLinkClick }) => {
     const [isPreview, setIsPreview] = useState(false);
     const fileInputRef = useRef(null);
@@ -171,7 +172,7 @@ const Editor = ({ activeNote, onUpdateNote, onTagClick, onWikiLinkClick }) => {
                                             title={t.copyLink}
                                             className="share-copy-btn"
                                         >
-                                            📋
+                                            <Copy size={14} />
                                         </button>
                                     </div>
                                 )}

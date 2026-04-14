@@ -3,6 +3,7 @@ import ForceGraph from "react-force-graph-2d";
 import api from '../api.js';
 import { useSettings } from '../context/SettingsContext.jsx';
 import { translations } from '../locales/translations.js';
+import { X, Folder } from 'lucide-react';
 // folders color palette
 const FOLDER_PALETTE = [
     '#e05c5c', '#e0995c', '#d4c84a', '#5cb85c',
@@ -180,11 +181,11 @@ const GraphView = ({ onClose, onNodeClick }) => {
                     <button
                         className="graph-detail-close"
                         onClick={() => setSelectedNode(null)}
-                    >✕</button>
+                    ><X size={16} /></button>
                     <h3 className="graph-detail-title">{selectedNode.label}</h3>
                     {selectedNode.folder_name && (
                         <p className="graph-detail-meta">
-                            📁 {selectedNode.folder_name}
+                            <Folder size={13} /> {selectedNode.folder_name}
                         </p>
                     )}
                     {selectedNode.tags && selectedNode.tags.length > 0 && (
