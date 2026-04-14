@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useSettings } from '../context/SettingsContext.jsx';
 import { translations } from '../locales/translations.js';
 import SettingsModal from './SettingsModal.jsx';
+import { FileText, Trash2, Folder, FolderOpen, FilePlus, FolderPlus, Network, Settings } from 'lucide-react';
 
 const NoteItem = ({ note, level = 0, activeNoteId, onSelectNote, onDeleteNote, t }) => {
     return (
@@ -13,7 +14,7 @@ const NoteItem = ({ note, level = 0, activeNoteId, onSelectNote, onDeleteNote, t
         >
             <div>
                 <div className="note-title">
-                    📄 {note.title || "Untitled Note"}
+                    <FileText size={14} style={{ flexShrink: 0 }} /> {note.title || "Untitled Note"}
                 </div>
                 {note.tags && note.tags.length > 0 && (
                     <div className="note-tags-row">
@@ -31,7 +32,7 @@ const NoteItem = ({ note, level = 0, activeNoteId, onSelectNote, onDeleteNote, t
                 }}
                 title={t.deleteNote}
             >
-                ×
+                <Trash2 size={14} />
             </button>
         </div>
     );
@@ -80,7 +81,7 @@ const FolderTree = ({ folder, level = 0, folders, notes, activeNoteId, onSelectN
                     style={{ fontWeight: '500' }}
                     onDoubleClick={(e) => { e.stopPropagation(); setIsEditing(true); }}
                 >
-                    {isOpen ? '📂' : '📁'}{' '}
+                    {isOpen ? <FolderOpen size={14} /> : <Folder size={14} />}{' '}
                     {isEditing ? (
                         <input
                             autoFocus
@@ -109,17 +110,17 @@ const FolderTree = ({ folder, level = 0, folders, notes, activeNoteId, onSelectN
                         onClick={(e) => { e.stopPropagation(); onAddNote(null, folder.id); setIsOpen(true); }}
                         style={{ background: 'transparent', border: 'none', color: 'var(--accent-color)', cursor: 'pointer', padding: '0 5px' }}
                         title={t.addNoteHere}
-                    >+📄</button>
+                    ><FilePlus size={14} /></button>
                     <button
                         onClick={(e) => { e.stopPropagation(); onAddFolder(folder.id); setIsOpen(true); }}
                         style={{ background: 'transparent', border: 'none', color: 'var(--accent-folder)', cursor: 'pointer', padding: '0 5px' }}
                         title={t.addSubfolder}
-                    >+📁</button>
+                    ><FolderPlus size={14} /></button>
                     <button
                         onClick={(e) => { e.stopPropagation(); onDeleteFolder(folder.id); }}
                         style={{ background: 'transparent', border: 'none', color: 'var(--accent-danger)', cursor: 'pointer', padding: '0 5px' }}
                         title={t.deleteFolder}
-                    >×</button>
+                    ><FolderPlus size={14} /></button>
                 </div>
             </div>
             {isOpen && (
@@ -261,7 +262,7 @@ const Sidebar = ({ notes, folders = [], activeNoteId, onSelectNote, onAddNote, o
                 onClick={onOpenGraph}
                 style={{ ...commonStyle, background: 'var(--panel-bg)', color: 'var(--text-muted)', cursor: 'pointer', marginBottom: '15px' }}
             >
-                🕸 {t.openGraphView}
+                <Network size={14} /> {t.openGraphView}
             </button>
             <div className="notes-list" style={{ flex: 1, overflowY: 'auto' }}>
                 {isSearching ? (
@@ -321,7 +322,7 @@ const Sidebar = ({ notes, folders = [], activeNoteId, onSelectNote, onAddNote, o
                     style={{ flex: 1, background: 'var(--border-color)', color: 'var(--accent-folder)' }}
                     title={t.newFolder}
                 >
-                    + 📁
+                    <FolderPlus size={15} />
                 </button>
                 <button
                     className="add-btn"
@@ -329,14 +330,14 @@ const Sidebar = ({ notes, folders = [], activeNoteId, onSelectNote, onAddNote, o
                     style={{ flex: 1 }}
                     title={t.newNote}
                 >
-                    + 📄
+                    <FilePlus size={15} />
                 </button>
                 <button
                     onClick={() => setIsSettingsOpen(true)}
                     style={{ padding: '10px', background: 'var(--border-color)', border: 'none', color: 'var(--text-muted)', borderRadius: '4px', cursor: 'pointer' }}
                     title={t.settingsTitle}
                 >
-                    ⚙
+                    <Settings size={16} />
                 </button>
                 <button
                     onClick={onLogout}
