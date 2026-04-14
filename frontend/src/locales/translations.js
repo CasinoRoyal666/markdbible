@@ -29,6 +29,10 @@ export const translations = {
         edit: 'Edit',
         preview: 'Preview',
         linkedToThisNote: 'Linked to this note:',
+        linkedMentions: 'Linked mentions',
+        outgoingLinks: 'Outgoing links',
+        linksPanelTitle: 'Links',
+        noLinks: 'No links yet',
         fileTooLarge: (mb) => `File size is too large, maximum size is ${mb} MB, please try again with smaller file size`,
         failedToUpload: 'Failed to upload image. Check server logs.',
         // Login
@@ -108,6 +112,10 @@ export const translations = {
         edit: 'Редактировать',
         preview: 'Просмотр',
         linkedToThisNote: 'Ссылки на эту заметку:',
+        linkedMentions: 'Связанные заметки',
+        outgoingLinks: 'Исходящие ссылки',
+        linksPanelTitle: 'Ссылки',
+        noLinks: 'Ссылок пока нет',
         fileTooLarge: (mb) => `Файл слишком большой, максимальный размер ${mb} МБ, попробуйте файл меньшего размера`,
         failedToUpload: 'Не удалось загрузить изображение. Проверьте логи сервера.',
         // Login
