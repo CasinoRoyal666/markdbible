@@ -1,10 +1,8 @@
 import React, { useMemo, useState } from 'react';
-import { useNavigate } from "react-router-dom";
 import { useSettings } from '../context/SettingsContext.jsx';
 import { translations } from '../locales/translations.js';
 import SettingsModal from './SettingsModal.jsx';
-import { FileText, Trash2, Folder, FolderOpen, FilePlus, FolderPlus, Network, Settings } from 'lucide-react';
-
+import { FileText, Trash2, Folder, FolderOpen, FilePlus, FolderPlus, Network, Settings, Plus, X } from 'lucide-react';
 const NoteItem = ({ note, level = 0, activeNoteId, onSelectNote, onDeleteNote, t }) => {
     return (
         <div
@@ -154,18 +152,14 @@ const FolderTree = ({ folder, level = 0, folders, notes, activeNoteId, onSelectN
     );
 };
 const Sidebar = ({ notes, folders = [], activeNoteId, onSelectNote, onAddNote, onAddFolder, onDeleteNote, onDeleteFolder, onRenameFolder, onOpenGraph, searchTerm, setSearchTerm }) => {
-    const navigate = useNavigate();
     const username = localStorage.getItem("username") || "User";
-    const [selectedTag, setSelectedTag] = useState(null);
     const [isTagsOpen, setIsTagsOpen] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+    const [isCreateOpen, setIsCreateOpen] = useState(false);
 
     const { language } = useSettings();
     const t = translations[language];
-    const onLogout = () => {
-        localStorage.clear();
-        navigate("/login");
-    };
+
     const uniqueTags = useMemo(() => {
         const tags = new Set();
         notes.forEach(note => {
@@ -200,7 +194,8 @@ const Sidebar = ({ notes, folders = [], activeNoteId, onSelectNote, onAddNote, o
         boxSizing: 'border-box',
         fontSize: '14px'
     };
-    const isSearching = searchTerm.trim() !== "" || selectedTag !== null;
+
+    const isSearching = searchTerm.trim() !== "";
     const rootFolders = folders.filter(f => f.parent === null);
     const rootNotes = notes.filter(n => n.folders === null);
     return (
@@ -305,37 +300,39 @@ const Sidebar = ({ notes, folders = [], activeNoteId, onSelectNote, onAddNote, o
                     </>
                 )}
             </div>
-            <div style={{ marginTop: 'auto', paddingTop: '10px', borderTop: '1px solid var(--border-color)', display: 'flex', gap: '5px' }}>
-                <button
-                    className="add-btn"
-                    onClick={() => onAddFolder(null)}
-                    style={{ flex: 1, background: 'var(--border-color)', color: 'var(--accent-folder)' }}
-                    title={t.newFolder}
-                >
-                    <FolderPlus size={15} />
-                </button>
-                <button
-                    className="add-btn"
-                    onClick={() => onAddNote(null, null)}
-                    style={{ flex: 1 }}
-                    title={t.newNote}
-                >
-                    <FilePlus size={15} />
-                </button>
-                <button
-                    onClick={() => setIsSettingsOpen(true)}
-                    style={{ padding: '10px', background: 'var(--border-color)', border: 'none', color: 'var(--text-muted)', borderRadius: '4px', cursor: 'pointer' }}
-                    title={t.settingsTitle}
-                >
-                    <Settings size={16} />
-                </button>
-                <button
-                    onClick={onLogout}
-                    style={{ padding: '10px', background: 'var(--border-color)', border: 'none', color: 'var(--accent-danger)', borderRadius: '4px', cursor: 'pointer' }}
-                    title={t.logout}
-                >
-                    {t.logout}
-                </button>
+            <div className="sidebar-bottom">
+                <div className={`sidebar-create-panel ${isCreateOpen ? 'sidebar-create-panel--open' : ''}`}>
+                    <button
+                        className="sidebar-create-btn"
+                        onClick={() => { onAddNote(null, null); setIsCreateOpen(false); }}
+                        title={t.newNote}
+                    >
+                        <FilePlus size={15} />
+                    </button>
+                    <button
+                        className="sidebar-create-btn sidebar-create-btn--folder"
+                        onClick={() => { onAddFolder(null); setIsCreateOpen(false); }}
+                        title={t.newFolder}
+                    >
+                        <FolderPlus size={15} />
+                    </button>
+                </div>
+                <div className="sidebar-bottom-row">
+                    <button
+                        className={`sidebar-toggle-btn ${isCreateOpen ? 'sidebar-toggle-btn--open' : ''}`}
+                        onClick={() => setIsCreateOpen(!isCreateOpen)}
+                        title={isCreateOpen ? t.closeGraph : t.newNote}
+                    >
+                        {isCreateOpen ? <X size={16} /> : <Plus size={16} />}
+                    </button>
+                    <button
+                        className="sidebar-settings-btn"
+                        onClick={() => setIsSettingsOpen(true)}
+                        title={t.settingsTitle}
+                    >
+                        <Settings size={16} />
+                    </button>
+                </div>
             </div>
         </div>
             <SettingsModal
