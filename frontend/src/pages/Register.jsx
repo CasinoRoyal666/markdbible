@@ -6,6 +6,7 @@ import { translations } from '../locales/translations.js';
 
 function Register() {
     const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
@@ -15,7 +16,7 @@ function Register() {
         e.preventDefault();
         setLoading(true);
         try {
-            await api.post("register/", { username, password });
+            await api.post("register/", { username, password, email });
             alert(t.registeredSuccess);
             navigate("/login");
         } catch (error) {
@@ -35,6 +36,14 @@ function Register() {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     className="auth-input"
+                />
+                <input
+                    type="email"
+                    placeholder={t.emailPlaceholder}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="auth-input"
+                    required
                 />
                 <input
                     type="password"

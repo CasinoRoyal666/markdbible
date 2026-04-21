@@ -50,6 +50,9 @@ function Login() {
                 </button>
             </form>
             <p className="auth-link">
+                <a href="/forgot-password">{t.forgotPassword}</a>
+            </p>
+            <p className="auth-link">
                 {t.noAccount} <a href="/register">{t.registration}</a>
             </p>
         </div>

@@ -7,7 +7,7 @@ from rest_framework_simplejwt.views import (
 from django.conf import settings
 from django.conf.urls.static import static
 from dj_rest_auth.views import PasswordResetConfirmView
-from ..notes.views import CustomPasswordResetView
+from notes.views import CustomPasswordResetView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -19,7 +19,7 @@ urlpatterns = [
 
     #password reset endpoint
     path('api/password-reset/', CustomPasswordResetView.as_view(), name='rest_password_reset'),
-    path('api/password-reset-confirm/', PasswordResetConfirmView.as_view(), name='rest_password_reset_confirm'),
+    path('api/password-reset-confirm/<uidb64>/<token>/', PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
 ]
 
 if settings.DEBUG:
