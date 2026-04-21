@@ -4,6 +4,8 @@ from rest_framework import generics, permissions, viewsets
 from rest_framework.decorators import action
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
+from dj_rest_auth.views import PasswordResetView
+from django.conf import settings
 
 from .models import Folder, ImageAttachment, Note
 from .serializers import (
@@ -256,3 +258,10 @@ class PublicNoteView(generics.RetrieveAPIView):
     def get_object(self):
         public_id = self.kwargs["public_id"]
         return get_object_or_404(Note, public_id=public_id, is_public=True)
+
+# password reset
+class CustomPasswordResetView(PasswordResetView):
+    def get_email_context(self):
+        context = super().get_email_context()
+        context['frontend_url'] = settings.FRONTEND_URL
+        return context
