@@ -1,6 +1,9 @@
 from rest_framework import serializers
 from .models import Note, Tag, ImageAttachment, Folder
 from django.contrib.auth.models import User
+from dj_rest_auth.serializers import PasswordResetSerializer
+from allauth.account.utils import user_pk_to_url_str
+from django.conf import settings
 
 class FolderSerializer(serializers.ModelSerializer):
     class Meta:
@@ -88,3 +91,13 @@ class ImageAttachmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = ImageAttachment
         fields = ['id', 'image', 'uploaded_at']
+
+def frontend_url_generator(request, user, temp_key):
+    uid = user_pk_to_url_str(user)
+    return f"{settings.FRONTEND_URL}/reset-password/{uid}/{temp_key}/"
+
+class CustomPasswordResetSerializer(PasswordResetSerializer):
+    def get_email_options(self):
+        return {
+            'url_generator': frontend_url_generator,
+        }

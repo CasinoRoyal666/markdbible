@@ -30,7 +30,18 @@ function ResetPassword() {
             });
             setSuccess(true);
         } catch (error) {
-            setError(t.passwordResetExpired);
+            const data = error.response?.data;
+            if (data?.new_password1) {
+                setError(data.new_password1.join(', '));
+            } else if (data?.new_password2) {
+                setError(data.new_password2.join(', '));
+            } else if (data?.token || data?.uid) {
+                setError(t.passwordResetExpired);
+            } else if (data?.detail) {
+                setError(data.detail);
+            } else {
+                setError(t.passwordResetExpired);
+            }
             console.error(error);
         } finally {
             setLoading(false);

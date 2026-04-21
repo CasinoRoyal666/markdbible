@@ -5,7 +5,7 @@ from rest_framework.decorators import action
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 from dj_rest_auth.views import PasswordResetView
-from django.conf import settings
+
 
 from .models import Folder, ImageAttachment, Note
 from .serializers import (
@@ -14,6 +14,7 @@ from .serializers import (
     NoteDetailSerializer,
     NoteListSerializer,
     UserSerializer,
+    CustomPasswordResetSerializer,
 )
 # TODO: Move this variables into separate file for code cleanliness
 
@@ -261,7 +262,4 @@ class PublicNoteView(generics.RetrieveAPIView):
 
 # password reset
 class CustomPasswordResetView(PasswordResetView):
-    def get_email_context(self):
-        context = super().get_email_context()
-        context['frontend_url'] = settings.FRONTEND_URL
-        return context
+    serializer_class = CustomPasswordResetSerializer
