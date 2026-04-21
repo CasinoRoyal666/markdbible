@@ -44,6 +44,21 @@ export const translations = {
         noAccount: 'No account?',
         registration: 'Registration',
         authError: 'Auth error, recheck login and password',
+        // Forgot Password
+        forgotPassword: 'Forgot password?',
+        forgotPasswordTitle: 'Forgot Password',
+        emailPlaceholder: 'Email',
+        sendResetLink: 'Send Reset Link',
+        resetEmailSent: 'If an account with this email exists, a reset link has been sent.',
+        // Reset Password
+        resetPasswordTitle: 'Reset Password',
+        newPasswordPlaceholder: 'New Password',
+        confirmPasswordPlaceholder: 'Confirm Password',
+        resetPasswordBtn: 'Reset Password',
+        passwordResetSuccess: 'Password successfully changed!',
+        passwordResetExpired: 'This link has expired. Please request a new one.',
+        passwordsDoNotMatch: 'Passwords do not match',
+        goToLogin: 'Go to Login',
         // Register
         registerTitle: 'Create Account',
         creating: 'Creating...',
@@ -132,6 +147,21 @@ export const translations = {
         noAccount: 'Нет аккаунта?',
         registration: 'Регистрация',
         authError: 'Ошибка авторизации, проверьте логин и пароль',
+        // Forgot Password
+        forgotPassword: 'Забыли пароль?',
+        forgotPasswordTitle: 'Забыли пароль',
+        emailPlaceholder: 'Email',
+        sendResetLink: 'Отправить ссылку',
+        resetEmailSent: 'Если аккаунт с таким email существует, письмо отправлено.',
+        // Reset Password
+        resetPasswordTitle: 'Сброс пароля',
+        newPasswordPlaceholder: 'Новый пароль',
+        confirmPasswordPlaceholder: 'Подтвердите пароль',
+        resetPasswordBtn: 'Сменить пароль',
+        passwordResetSuccess: 'Пароль успешно изменён!',
+        passwordResetExpired: 'Ссылка истекла. Запросите новую.',
+        passwordsDoNotMatch: 'Пароли не совпадают',
+        goToLogin: 'Войти в аккаунт',
         // Register
         registerTitle: 'Создать аккаунт',
         creating: 'Создание...',

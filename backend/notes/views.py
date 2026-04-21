@@ -4,6 +4,8 @@ from rest_framework import generics, permissions, viewsets
 from rest_framework.decorators import action
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
+from dj_rest_auth.views import PasswordResetView
+
 
 from .models import Folder, ImageAttachment, Note
 from .serializers import (
@@ -12,6 +14,7 @@ from .serializers import (
     NoteDetailSerializer,
     NoteListSerializer,
     UserSerializer,
+    CustomPasswordResetSerializer,
 )
 # TODO: Move this variables into separate file for code cleanliness
 
@@ -256,3 +259,7 @@ class PublicNoteView(generics.RetrieveAPIView):
     def get_object(self):
         public_id = self.kwargs["public_id"]
         return get_object_or_404(Note, public_id=public_id, is_public=True)
+
+# password reset
+class CustomPasswordResetView(PasswordResetView):
+    serializer_class = CustomPasswordResetSerializer
