@@ -19,7 +19,7 @@ function Login() {
             localStorage.setItem("access", res.data.access);
             localStorage.setItem("refresh", res.data.refresh);
             localStorage.setItem("username", username);
-            navigate("/");
+            navigate("/app");
         } catch (error) {
             alert(t.authError);
             console.error(error);
