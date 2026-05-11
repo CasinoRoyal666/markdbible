@@ -296,7 +296,8 @@
 .links-sidebar {
     width: 220px;
     min-width: 220px;
-    border-left: 1px solid color-mix(in srgb, var(--border-color) 40%, transparent);
+    border-left: 1px solid
+        color-mix(in srgb, var(--border-color) 40%, transparent);
     background: transparent;
     display: flex;
     flex-direction: column;
@@ -307,7 +308,8 @@
     align-items: center;
     justify-content: space-between;
     padding: 8px 10px;
-    border-bottom: 1px solid color-mix(in srgb, var(--border-color) 30%, transparent);
+    border-bottom: 1px solid
+        color-mix(in srgb, var(--border-color) 30%, transparent);
 }
 .links-sidebar-title {
     font-size: 0.78rem;
@@ -325,7 +327,9 @@
     display: flex;
     align-items: center;
     border-radius: 3px;
-    transition: color 0.2s, background 0.2s;
+    transition:
+        color 0.2s,
+        background 0.2s;
 }
 .links-sidebar-close:hover {
     color: var(--text-color);
@@ -379,7 +383,9 @@
     justify-content: space-between;
     padding: 4px 10px 4px 16px;
     cursor: pointer;
-    transition: background 0.2s, color 0.2s;
+    transition:
+        background 0.2s,
+        color 0.2s;
     font-size: 0.8rem;
     color: var(--text-muted);
     border-radius: 3px;
@@ -415,7 +421,10 @@
     max-height: 0;
     overflow: hidden;
     opacity: 0;
-    transition: max-height 0.25s ease, opacity 0.2s ease, padding 0.25s ease;
+    transition:
+        max-height 0.25s ease,
+        opacity 0.2s ease,
+        padding 0.25s ease;
     padding: 0 0;
 }
 .sidebar-create-panel--open {
@@ -514,7 +523,7 @@
     align-items: center;
     height: 100vh;
     flex-direction: column;
-    min-height: 400px
+    min-height: 400px;
 }
 .auth-form {
     display: flex;
@@ -546,6 +555,28 @@
 .auth-btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+}
+.auth-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.auth-input--error {
+    border-color: var(--accent-danger) !important;
+}
+.auth-error-text {
+    color: var(--accent-danger);
+    font-size: 0.8rem;
+    line-height: 1.3;
+    margin-bottom: 4px;
+}
+.auth-server-error {
+    background: color-mix(in srgb, var(--accent-danger) 15%, transparent);
+    color: var(--accent-danger);
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    text-align: center;
 }
 .auth-link {
     margin-top: 20px;
@@ -654,7 +685,9 @@
     animation: graph-spin 0.8s linear infinite;
 }
 @keyframes graph-spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 /* Панель деталей (справа) */
 .graph-detail-panel {
@@ -1182,9 +1215,19 @@
 }
 
 @keyframes bounce {
-    0%, 20%, 50%, 80%, 100% {transform: translateY(0) translateX(-50%);}
-    40% {transform: translateY(-10px) translateX(-50%);}
-    60% {transform: translateY(-5px) translateX(-50%);}
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateY(0) translateX(-50%);
+    }
+    40% {
+        transform: translateY(-10px) translateX(-50%);
+    }
+    60% {
+        transform: translateY(-5px) translateX(-50%);
+    }
 }
 
 .features-section {
@@ -1213,17 +1256,6 @@
     justify-content: center;
     align-items: center;
     padding-bottom: 100px;
-}
-
-/* Logo animation */
-@keyframes logo-pulse {
-    0% { filter: drop-shadow(0 0 0px var(--accent-color)); }
-    50% { filter: drop-shadow(0 0 8px var(--accent-color)); }
-    100% { filter: drop-shadow(0 0 0px var(--accent-color)); }
-}
-
-.hero-logo-animation {
-    animation: logo-pulse 4s infinite ease-in-out;
 }
 
 .landing-logo-link {
