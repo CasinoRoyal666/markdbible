@@ -154,6 +154,35 @@ function Landing() {
         </motion.section>
 
         <motion.section
+          className="landing-how"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.5 }}
+        >
+          <h2 className="landing-section-title">
+            {t.landing_how_title}
+          </h2>
+          <div className="landing-how-grid">
+            <div className="landing-how-step">
+              <div className="landing-how-num">01</div>
+              <h3 className="landing-how-step-title">{t.landing_how_step1_title}</h3>
+              <p className="landing-how-step-desc">{t.landing_how_step1_desc}</p>
+            </div>
+            <div className="landing-how-step">
+              <div className="landing-how-num">02</div>
+              <h3 className="landing-how-step-title">{t.landing_how_step2_title}</h3>
+              <p className="landing-how-step-desc">{t.landing_how_step2_desc}</p>
+            </div>
+            <div className="landing-how-step">
+              <div className="landing-how-num">03</div>
+              <h3 className="landing-how-step-title">{t.landing_how_step3_title}</h3>
+              <p className="landing-how-step-desc">{t.landing_how_step3_desc}</p>
+            </div>
+          </div>
+        </motion.section>
+
+        <motion.section
           className="landing-features"
           id="features"
           initial={{ opacity: 0, y: 20 }}
@@ -232,6 +261,55 @@ function Landing() {
               <p className="landing-feature-desc">
                 {t.landing_feature_organization_desc}
               </p>
+            </div>
+          </div>
+        </motion.section>
+
+        <motion.section
+          className="landing-built"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.5 }}
+        >
+          <h2 className="landing-section-title">
+            {t.landing_built_title}
+          </h2>
+          <div className="landing-built-grid">
+            <div className="landing-built-item">
+              <div className="landing-built-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                  <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                </svg>
+              </div>
+              <p className="landing-built-desc">{t.landing_built_researchers}</p>
+            </div>
+            <div className="landing-built-item">
+              <div className="landing-built-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                </svg>
+              </div>
+              <p className="landing-built-desc">{t.landing_built_writers}</p>
+            </div>
+            <div className="landing-built-item">
+              <div className="landing-built-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="16 18 22 12 16 6" />
+                  <polyline points="8 6 2 12 8 18" />
+                </svg>
+              </div>
+              <p className="landing-built-desc">{t.landing_built_developers}</p>
+            </div>
+            <div className="landing-built-item">
+              <div className="landing-built-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                  <path d="M6 12v5c3 3 9 3 12 0v-5" />
+                </svg>
+              </div>
+              <p className="landing-built-desc">{t.landing_built_students}</p>
             </div>
           </div>
         </motion.section>
