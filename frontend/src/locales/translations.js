@@ -135,6 +135,14 @@ export const translations = {
     landing_feature_organization_desc:
       "Use folders and tags to keep your workspace tidy, no matter how large it grows.",
     landing_all_rights_reserved: "All rights reserved.",
+    landing_editor_tab: "note.md",
+    landing_editor_line1: "Welcome to MarkDBible",
+    landing_editor_line3_kw: "Connect",
+    landing_editor_line3_rest: "your notes with",
+    landing_editor_line4_kw: "Visualize",
+    landing_editor_line4_rest: "your knowledge as a graph",
+    landing_editor_tag1: "#knowledge",
+    landing_editor_tag2: "#wiki",
   },
   ru: {
     // Sidebar
@@ -272,5 +280,13 @@ export const translations = {
     landing_feature_organization_desc:
       "Используйте папки и теги, чтобы поддерживать порядок в рабочем пространстве, независимо от его размера.",
     landing_all_rights_reserved: "Все права защищены.",
+    landing_editor_tab: "заметка.md",
+    landing_editor_line1: "Добро пожаловать в MarkDBible",
+    landing_editor_line3_kw: "Связывайте",
+    landing_editor_line3_rest: "заметки с помощью",
+    landing_editor_line4_kw: "Визуализируйте",
+    landing_editor_line4_rest: "знания в виде графа",
+    landing_editor_tag1: "#знания",
+    landing_editor_tag2: "#вики",
   },
 };
