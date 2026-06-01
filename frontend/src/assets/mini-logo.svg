@@ -1,0 +1,45 @@
+<svg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="miniGradient" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#0066CB" />
+      <stop offset="50%" stop-color="#5AAFE6" />
+      <stop offset="100%" stop-color="#B4E4FF" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Connection lines - knowledge graph -->
+  <g stroke="url(#miniGradient)" stroke-width="2" fill="none" opacity="0.6">
+    <line x1="40" y1="15" x2="20" y2="35" />
+    <line x1="40" y1="15" x2="60" y2="35" />
+    <line x1="20" y1="35" x2="15" y2="55" />
+    <line x1="20" y1="35" x2="40" y2="50" />
+    <line x1="60" y1="35" x2="40" y2="50" />
+    <line x1="60" y1="35" x2="65" y2="55" />
+    <line x1="40" y1="50" x2="40" y2="70" />
+  </g>
+
+  <!-- Nodes - representing connected knowledge -->
+  <g fill="url(#miniGradient)" filter="url(#glow)">
+    <!-- Top central node - main idea -->
+    <circle cx="40" cy="15" r="6" />
+
+    <!-- Second level nodes -->
+    <circle cx="20" cy="35" r="5" />
+    <circle cx="60" cy="35" r="5" />
+
+    <!-- Third level nodes -->
+    <circle cx="15" cy="55" r="4" />
+    <circle cx="40" cy="50" r="5" />
+    <circle cx="65" cy="55" r="4" />
+
+    <!-- Bottom node -->
+    <circle cx="40" cy="70" r="4" />
+  </g>
+</svg>

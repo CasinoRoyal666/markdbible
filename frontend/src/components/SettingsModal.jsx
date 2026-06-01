@@ -8,7 +8,7 @@ const SettingsModal = ({ isOpen, onClose }) => {
     const navigate = useNavigate();
     const handleLogout = () => {
         localStorage.clear();
-        navigate("/login");
+        navigate("/");
     };
     if (!isOpen) return null;
     return (
