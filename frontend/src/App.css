@@ -81,6 +81,46 @@
     background-color: var(--border-color);
     border-radius: 2px;
 }
+.search-input-wrapper {
+    position: relative;
+    width: 100%;
+    margin-bottom: 10px;
+}
+.search-input {
+    width: 100%;
+    padding: 8px 30px 8px 8px;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.15s;
+}
+.search-input:focus {
+    border-color: var(--accent-color);
+}
+.search-clear-btn {
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: var(--text-faint);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.15s, background 0.15s;
+}
+.search-clear-btn:hover {
+    color: var(--text-color);
+    background: var(--hover-bg);
+}
 .obsidian-tag {
     background-color: rgba(108, 99, 255, 0.15);
     color: var(--accent-color);
