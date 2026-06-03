@@ -216,8 +216,8 @@ const Sidebar = ({ notes, folders = [], activeNoteId, onSelectNote, onAddNote, o
             {uniqueTags.length > 0 && (
                 <div style={{ marginBottom: '10px' }}>
                     <div
+                        className="tags-section-header"
                         onClick={() => setIsTagsOpen(!isTagsOpen)}
-                        style={{ fontSize: '0.8rem', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', padding: '0 5px' }}
                     >
                         <span>{t.tags} ({uniqueTags.length})</span>
                         <span>{isTagsOpen ? '▲' : '▼'}</span>
