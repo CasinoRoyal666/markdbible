@@ -47,7 +47,7 @@ function Home() {
     const addNote = async (customTitle = null, folderId = null) => {
         try {
             const response = await api.post('notes/', {
-                title: typeof customTitle === 'string' ? customTitle : "NewNote",
+                title: typeof customTitle === 'string' ? customTitle : t.newNote,
                 content: "",
                 folders: folderId
             });

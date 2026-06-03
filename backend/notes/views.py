@@ -1,150 +1,104 @@
+from dj_rest_auth.views import PasswordResetView
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, permissions, viewsets
 from rest_framework.decorators import action
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
-from dj_rest_auth.views import PasswordResetView
-
 
 from .models import Folder, ImageAttachment, Note
 from .serializers import (
+    CustomPasswordResetSerializer,
     FolderSerializer,
     ImageAttachmentSerializer,
     NoteDetailSerializer,
     NoteListSerializer,
     UserSerializer,
-    CustomPasswordResetSerializer,
 )
+
 # TODO: Move this variables into separate file for code cleanliness
 
-WELCOME_NOTE_TITLE = "Welcome to MarkDBible!"
+WELCOME_NOTE_TITLE = "Добро пожаловать в MarkDBible!"
 
 WELCOME_NOTE_CONTENT = """\
-# Welcome to MarkDBible!
+# Добро пожаловать в MarkDBible!
 
-This note was created automatically to help you get started.
-Feel free to delete it once you're comfortable with the app.
-
----
-
-## Markdown Basics
-
-Markdown lets you format text with simple symbols.
-
-### Headings
-
-```
-# Heading 1
-## Heading 2
-### Heading 3
-```
-
-### Text Styling
-
-| Syntax | Result |
-|--------|--------|
-| `**bold**` | **bold** |
-| `*italic*` | *italic* |
-| `~~strikethrough~~` | ~~strikethrough~~ |
-| `` `inline code` `` | `inline code` |
-
-### Lists
-
-Unordered list:
-- Item one
-- Item two
-  - Nested item
-
-Ordered list:
-1. First
-2. Second
-3. Third
-
-Task list (checkboxes):
-```
-- [ ] Buy groceries
-- [x] Read documentation
-- [ ] Write a note
-```
-
-### Blockquotes
-
-```
-> This is a blockquote.
-> It can span multiple lines.
-```
-
-> This is a blockquote.
-
-### Code Blocks
-
-Use triple backticks for multi-line code:
-
-```
-python
-def greet(name):
-    return f"Hello, {name}!"
-```
-
-### Horizontal Rule
-
-```
----
-```
-
-### Links and Images
-
-```
-[Link text](https://example.com)
-![Alt text](https://example.com/image.png)
-```
+Эта заметка создана автоматически, чтобы помочь вам начать работу.
+Удалите её, когда освоитесь.
 
 ---
 
-## MarkDBible Features
+## Основы Markdown
 
-### Wikilinks — Connect Your Notes
+### Заголовки
 
-Wrap any note title in double square brackets to create a link between notes, like in example below:
+```
+# Заголовок 1
+## Заголовок 2
+### Заголовок 3
+```
 
-I was reading [[Atomic Habits]] and it reminded me of [[Deep Work]].
+### Форматирование текста
 
-When you save, MarkDBible automatically builds connections. You can visualize them in the **Graph View**.
 
-### Hashtags — Organize with Tags
+`**жирный**` - **жирный**
+`*курсив*` - *курсив*
+`~~зачёркнутый~~` - ~~зачёркнутый~~
+`` `код` `` - `код`
 
-Add `#hashtags` anywhere in the note body:
+### Списки
 
-Today's standup notes. #work #meeting 
+- Пункт 1
+- Пункт 2
+  - Вложенный
 
-Tags are extracted automatically and shown in the note list — no manual tagging needed.
+1. Первый
+2. Второй
+3. Третий
 
-### Folders
+---
 
-Use the sidebar to create folders and sub-folders. Drag notes into folders to keep your knowledge base organized.
+## Возможности MarkDBible
 
-### Sharing
+### Wiki-ссылки
 
-Open any note and toggle **Make Public** to get a shareable link. Anyone with the link can read the note — no account required.
+Оберните название заметки в двойные квадратные скобки, чтобы создать связь:
+
+Я читал [[Атомные привычки]] и вспомнил о [[Глубокая работа]].
+
+При сохранении MarkDBible автоматически построит связи. Вы увидите их в **Graph View**.
+
+### Хештеги
+
+Добавляйте `#хештеги` в текст заметки:
+
+Сегодняшние заметки.
+#work #meet
+
+Теги извлекаются автоматически и отображаются в списке заметок.
+
+### Папки
+
+Используйте боковую панель для создания папок и подпапок. Перетаскивайте заметки для порядка.
+
+### Публикация
+
+Откройте заметку и включите **Сделать публичной** — получите ссылку для доступа без регистрации.
 
 ### Graph View
 
-Click the graph icon in the sidebar to see how your notes are connected via wikilinks. Great for discovering relationships in your knowledge base.
+Нажмите иконку графа в боковой панели, чтобы увидеть связи между заметками.
 
-### Image Attachments
+### Изображения
 
-- Drag and drop an image into the editor, or
-- Paste from clipboard (`Ctrl+V`)
-
-Images are uploaded and embedded automatically.
+Перетащите изображение в редактор или вставьте из буфера (`Ctrl+V`).
 
 ---
 
-> **Tip:** Delete this note whenever you're ready — it's just a regular note.
+> **Совет:** Удалите эту заметку, когда будете готовы — это обычная заметка.
 """
 
-# TODO: Add russian language support. System detects user language and generates welcome note with it
+
 def create_welcome_note(user):
     """Create an onboarding note for a newly registered user."""
     return Note.objects.create(
@@ -259,6 +213,7 @@ class PublicNoteView(generics.RetrieveAPIView):
     def get_object(self):
         public_id = self.kwargs["public_id"]
         return get_object_or_404(Note, public_id=public_id, is_public=True)
+
 
 # password reset
 class CustomPasswordResetView(PasswordResetView):
