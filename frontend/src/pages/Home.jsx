@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import "../App.css";
 import api from "../api";
 import Sidebar from "../components/Sidebar.jsx";
@@ -13,7 +13,7 @@ function Home() {
     const [saveStatus, setSaveStatus] = useState("saved");
     const [isGraphOpen, setIsGraphOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
-    const { language } = useSettings();
+    const { language, noteSort, confirmDelete, autosaveDelay } = useSettings();
     const t = translations[language];
     useEffect(() => {
         const fetchNotes = async () => {
@@ -82,8 +82,11 @@ function Home() {
         }
     };
     const onDeleteNote = async (noteId) => {
-        const confirmDelete = window.confirm(t.confirmDeleteNote);
-        if (!confirmDelete) return;
+        if (confirmDelete) {
+            const note = notes.find(n => n.id === noteId);
+            const confirmed = window.confirm(`${t.deleteNoteConfirm}\n${note?.title || ''}`);
+            if (!confirmed) return;
+        }
         try {
             await api.delete(`notes/${noteId}/`);
             setNotes(notes.filter((note) => note.id !== noteId));
@@ -141,6 +144,17 @@ function Home() {
         const cleanTag = tagName.replace('#', '');
         setSearchTerm(`#${cleanTag}`);
     };
+    const sortedNotes = useMemo(() => {
+        const sorted = [...notes];
+        switch (noteSort) {
+            case 'newest': return sorted.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            case 'oldest': return sorted.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+            case 'alpha': return sorted.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
+            case 'alpha-rev': return sorted.sort((a, b) => (b.title || '').localeCompare(a.title || ''));
+            case 'updated': return sorted.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+            default: return sorted;
+        }
+    }, [notes, noteSort]);
     const activeNote = notes.find((note) => note.id === activeNoteId);
     const onWikiLinkClick = async (title) => {
         const targetNote = notes.find(n => n.title.toLowerCase() === title.toLowerCase());
@@ -168,7 +182,7 @@ function Home() {
                 console.error("error while auto-save: ", error);
                 setSaveStatus("error");
             }
-        }, 1000);
+        }, Number(autosaveDelay));
         return () => clearTimeout(timeoutId);
     }, [activeNote, saveStatus]);
     const getSaveStatusText = () => {
@@ -183,7 +197,7 @@ function Home() {
     return (
         <div className="app-container">
             <Sidebar
-                notes={notes}
+                notes={sortedNotes}
                 folders={folders}
                 activeNoteId={activeNoteId}
                 onSelectNote={onSelectNote}

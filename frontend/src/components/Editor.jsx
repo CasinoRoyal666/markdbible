@@ -13,7 +13,7 @@ const Editor = ({ activeNote, onUpdateNote, onTagClick, onWikiLinkClick }) => {
     const textareaRef = useRef(null);
     const [isShareOpen, setIsShareOpen] = useState(false);
     const sharePopoverRef = useRef(null);
-    const { language } = useSettings();
+    const { language, editorFontSize } = useSettings();
     const t = translations[language];
     useEffect(() => {
         const handleClickOutside = (e) => {
@@ -223,6 +223,7 @@ const Editor = ({ activeNote, onUpdateNote, onTagClick, onWikiLinkClick }) => {
                     onDrop={handleDrop}
                     onDragOver={handleDragOver}
                     onPaste={handlePaste}
+                    style={{ fontSize: editorFontSize + 'rem' }}
                 />
             )}
             </div>
