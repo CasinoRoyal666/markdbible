@@ -55,13 +55,17 @@ export function SettingsProvider({ children }) {
         localStorage.setItem('autosaveDelay', autosaveDelay);
     }, [autosaveDelay]);
 
-    const toggleTheme = () => setTheme(t => t === 'dark' ? 'light' : 'dark');
+    const toggleTheme = () => setTheme(t => {
+        if (t === 'dark') return 'light';
+        if (t === 'light') return 'codex';
+        return 'dark';
+    });
     const toggleLanguage = () => setLanguage(l => l === 'en' ? 'ru' : 'en');
     const toggleConfirmDelete = () => setConfirmDelete(v => !v);
 
     return (
         <SettingsContext.Provider value={{
-            language, theme, toggleTheme, toggleLanguage,
+            language, theme, setTheme, toggleTheme, toggleLanguage,
             editorFontSize, setEditorFontSize,
             noteSort, setNoteSort,
             confirmDelete, toggleConfirmDelete,

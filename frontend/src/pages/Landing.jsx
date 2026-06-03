@@ -37,7 +37,7 @@ function Landing() {
                         className="theme-toggle-btn"
                         title={t.themeLabel}
                     >
-                        {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+                        {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
                     </button>
 
                     {isLoggedIn ? (

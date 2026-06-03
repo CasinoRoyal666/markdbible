@@ -28,9 +28,9 @@ const Logo = ({ size = 'md', className = '' }) => {
         xmlns="http://www.w3.org/2000/svg"
       >
         <defs>
-          <linearGradient id="logoGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="50%" stopColor="var(--accent-color)" />
-            <stop offset="50%" stopColor="#8c78ff" />
+          <linearGradient id="logoGradient" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="var(--accent-color)" />
+            <stop offset="100%" stopColor="var(--accent-folder)" />
           </linearGradient>
         </defs>
 

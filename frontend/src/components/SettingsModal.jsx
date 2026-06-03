@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 const SettingsModal = ({ isOpen, onClose }) => {
     const {
-        language, theme, toggleTheme, toggleLanguage,
+        language, theme, setTheme, toggleTheme, toggleLanguage,
         editorFontSize, setEditorFontSize,
         noteSort, setNoteSort,
         confirmDelete, toggleConfirmDelete,
@@ -58,12 +58,26 @@ const SettingsModal = ({ isOpen, onClose }) => {
                         </div>
                         <div className="setting-row">
                             <span className="setting-label">{t.themeLabel}</span>
-                            <div className="toggle-switch" onClick={toggleTheme}>
-                                <div className={`toggle-thumb ${theme === 'light' ? 'right' : ''}`} />
+                            <div className="theme-segmented">
+                                <button
+                                    className={`theme-segmented-btn ${theme === 'dark' ? 'active' : ''}`}
+                                    onClick={() => setTheme('dark')}
+                                >
+                                    {t.themeDark}
+                                </button>
+                                <button
+                                    className={`theme-segmented-btn ${theme === 'light' ? 'active' : ''}`}
+                                    onClick={() => setTheme('light')}
+                                >
+                                    {t.themeLight}
+                                </button>
+                                <button
+                                    className={`theme-segmented-btn ${theme === 'codex' ? 'active' : ''}`}
+                                    onClick={() => setTheme('codex')}
+                                >
+                                    {t.themeCodex}
+                                </button>
                             </div>
-                            <span className="toggle-label">
-                                {theme === 'dark' ? t.themeDark : t.themeLight}
-                            </span>
                         </div>
                     </div>
                 )}

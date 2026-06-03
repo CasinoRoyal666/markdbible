@@ -37,6 +37,25 @@
     --panel-bg-2: #f3f3f3;
     --shadow: rgba(0, 0, 0, 0.15);
 }
+/* codex theme — warm dark, manuscript-inspired */
+:root[data-theme="codex"] {
+    --bg-color: #1a1614;
+    --sidebar-bg: #211e1b;
+    --text-color: #d4ccc4;
+    --text-muted: #8a8078;
+    --text-faint: #605850;
+    --accent-color: #c9a84c;
+    --accent-folder: #d4917a;
+    --accent-danger: #c45c4a;
+    --accent-success: #6aaa5c;
+    --accent-success-bg: #1e2a1a;
+    --border-color: #352f2a;
+    --hover-bg: #2a2520;
+    --input-bg: #1a1614;
+    --panel-bg: #262220;
+    --panel-bg-2: #211e1b;
+    --shadow: rgba(0, 0, 0, 0.5);
+}
 body {
     margin: 0;
     background-color: var(--bg-color);

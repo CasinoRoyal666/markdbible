@@ -122,7 +122,7 @@
     background: var(--hover-bg);
 }
 .obsidian-tag {
-    background-color: rgba(108, 99, 255, 0.15);
+    background-color: color-mix(in srgb, var(--accent-color) 15%, transparent);
     color: var(--accent-color);
     border-radius: 4px;
     padding: 1px 7px;
@@ -135,8 +135,8 @@
     border: 1px solid transparent;
 }
 .obsidian-tag:hover {
-    background-color: rgba(108, 99, 255, 0.3);
-    border-color: rgba(108, 99, 255, 0.3);
+    background-color: color-mix(in srgb, var(--accent-color) 30%, transparent);
+    border-color: color-mix(in srgb, var(--accent-color) 30%, transparent);
     text-decoration: none;
 }
 .tag-pill {
@@ -977,9 +977,9 @@
     font-size: 0.78rem;
     padding: 2px 8px;
     border-radius: 10px;
-    background: rgba(0, 102, 204, 0.12);
+    background: color-mix(in srgb, var(--accent-color) 12%, transparent);
     color: var(--accent-color);
-    border: 1px solid rgba(0, 102, 204, 0.35);
+    border: 1px solid color-mix(in srgb, var(--accent-color) 35%, transparent);
 }
 .graph-detail-section {
     display: flex;
@@ -1338,6 +1338,36 @@
 }
 .modal-logout-btn:hover {
     background: rgba(204, 34, 34, 0.25);
+}
+/* Theme segmented control */
+.theme-segmented {
+    display: flex;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+.theme-segmented-btn {
+    padding: 5px 12px;
+    font-size: 0.8rem;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+    white-space: nowrap;
+}
+.theme-segmented-btn:not(:last-child) {
+    border-right: 1px solid var(--border-color);
+}
+.theme-segmented-btn:hover {
+    color: var(--text-color);
+    background: var(--hover-bg);
+}
+.theme-segmented-btn.active {
+    background: var(--accent-color);
+    color: #fff;
 }
 /* ============================
    Landing Page — Clean Editorial
