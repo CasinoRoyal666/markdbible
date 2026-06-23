@@ -12,7 +12,7 @@ const FOLDER_PALETTE = [
 ];
 
 const getFolderColor = (folderId, theme) => {
-    if (folderId == null) return theme === 'light' ? '#0066cc' : '#78a9ff';
+    if (folderId == null) return theme === 'light' ? '#0066cc' : theme === 'codex' ? '#c9a84c' : '#78a9ff';
     return FOLDER_PALETTE[folderId % FOLDER_PALETTE.length];
 };
 
@@ -59,9 +59,9 @@ const GraphView = ({ onClose, onNodeClick }) => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    const bgColor = theme === 'light' ? '#ffffff' : '#1e1e1e';
-    const linkColor = theme === 'light' ? '#cccccc' : '#444444';
-    const textColor = theme === 'light' ? '#111111' : '#eeeeee';
+    const bgColor = theme === 'light' ? '#ffffff' : theme === 'codex' ? '#1a1614' : '#1e1e1e';
+    const linkColor = theme === 'light' ? '#cccccc' : theme === 'codex' ? '#3a3430' : '#444444';
+    const textColor = theme === 'light' ? '#111111' : theme === 'codex' ? '#d4ccc4' : '#eeeeee';
 
     const incomingCount = {};
     graphData.nodes.forEach(n => { incomingCount[n.id] = 0; });

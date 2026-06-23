@@ -206,18 +206,29 @@ const Sidebar = ({ notes, folders = [], activeNoteId, onSelectNote, onAddNote, o
                     {t.loggedInAs}: <span style={{ color: 'var(--accent-color)' }}>{username}</span>
                 </div>
             </div>
-            <input
-                type="text"
-                placeholder={t.searchPlaceholder}
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                style={commonStyle}
-            />
+            <div className="search-input-wrapper">
+                <input
+                    type="text"
+                    placeholder={t.searchPlaceholder}
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="search-input"
+                />
+                {searchTerm && (
+                    <button
+                        className="search-clear-btn"
+                        onClick={() => setSearchTerm("")}
+                        title={t.searchPlaceholder}
+                    >
+                        <X size={14} />
+                    </button>
+                )}
+            </div>
             {uniqueTags.length > 0 && (
                 <div style={{ marginBottom: '10px' }}>
                     <div
+                        className="tags-section-header"
                         onClick={() => setIsTagsOpen(!isTagsOpen)}
-                        style={{ fontSize: '0.8rem', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', padding: '0 5px' }}
                     >
                         <span>{t.tags} ({uniqueTags.length})</span>
                         <span>{isTagsOpen ? '▲' : '▼'}</span>
